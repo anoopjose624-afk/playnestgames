@@ -54,6 +54,21 @@ npm run build
 
 Outputs `main.js` and refreshes `assets/` in place.
 
+From the repo root: `npm run build:runner`
+
+## Vercel / deploy checklist
+
+Commit these paths so production works:
+
+- `public/games/endless-runner/main.js` (built bundle)
+- `public/games/endless-runner/assets/**`
+- `public/games/endless-runner/index.html`, `form.html`, `playnest-overrides.css`
+- `public/playnest-engine/**` (mobile bridge + CSS)
+- `public/thumbnails/endless-runner.svg`
+- `data/games.json` (catalog entry)
+
+Do **not** commit `public/games/endless-runner/node_modules/`.
+
 ## Scores & settings
 
 - **localStorage** `playnest-endless-runner-scores` — leaderboard fallback

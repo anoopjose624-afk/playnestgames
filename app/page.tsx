@@ -1,14 +1,19 @@
 import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
 import { GameGrid } from "@/components/GameGrid";
+import { HomeHero } from "@/components/HomeHero";
 import {
   getCategories,
   getFeaturedGames,
   getGames,
+  getHeroGame,
 } from "@/lib/games";
 
 export default function HomePage() {
-  const featured = getFeaturedGames();
+  const hero = getHeroGame();
+  const featured = getFeaturedGames().filter(
+    (g) => g.slug !== hero?.slug,
+  );
   const allGames = getGames();
   const categories = getCategories();
 
@@ -23,6 +28,8 @@ export default function HomePage() {
           game and start playing instantly in your browser.
         </p>
       </section>
+
+      {hero && <HomeHero game={hero} />}
 
       <section className="mb-8">
         <CategoryPills categories={categories} />

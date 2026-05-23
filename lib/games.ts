@@ -15,6 +15,11 @@ export function getFeaturedGames(): Game[] {
   return games.filter((g) => g.featured);
 }
 
+/** Spotlight game for the homepage hero (Endless Runner). */
+export function getHeroGame(): Game | undefined {
+  return getGameBySlug("endless-runner") ?? getFeaturedGames()[0];
+}
+
 export function getGamesByCategory(category: string): Game[] {
   const normalized = category.toLowerCase();
   return games.filter((g) =>

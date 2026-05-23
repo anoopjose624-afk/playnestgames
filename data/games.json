@@ -55,6 +55,17 @@
     "publisher": "PlayNest"
   },
   {
+    "id": "endless-runner",
+    "slug": "endless-runner",
+    "title": "Endless Runner",
+    "description": "Run, double-jump, and slide through a neon obstacle course. Collect coins, dodge birds and missiles, and chase the high score.",
+    "thumbnail": "/thumbnails/endless-runner.svg",
+    "embedUrl": "/games/endless-runner/index.html",
+    "categories": ["action", "arcade"],
+    "featured": true,
+    "publisher": "PlayNest"
+  },
+  {
     "id": "breakout",
     "slug": "breakout",
     "title": "Brick Breaker",

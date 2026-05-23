@@ -25,6 +25,9 @@ export function GameCard({ game }: GameCardProps) {
             Featured
           </span>
         )}
+        <span className="absolute bottom-2 right-2 rounded-full bg-violet-500 px-3 py-1.5 text-xs font-bold text-white shadow-md transition group-hover:bg-violet-400 group-hover:scale-105">
+          Play
+        </span>
       </div>
       <div className="p-3">
         <h3 className="truncate font-bold text-white group-hover:text-violet-200">

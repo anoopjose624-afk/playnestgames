@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:runner": "npm run build --prefix public/games/endless-runner",
     "start": "next start",
     "lint": "eslint"
   },

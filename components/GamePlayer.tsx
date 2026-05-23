@@ -6,9 +6,11 @@ import { isEmbedUrlAllowed, resolveEmbedUrl } from "@/lib/embed";
 interface GamePlayerProps {
   embedUrl: string;
   title: string;
+  /** Taller iframe for landscape runners (e.g. endless-runner). */
+  tall?: boolean;
 }
 
-export function GamePlayer({ embedUrl, title }: GamePlayerProps) {
+export function GamePlayer({ embedUrl, title, tall = false }: GamePlayerProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -45,7 +47,11 @@ export function GamePlayer({ embedUrl, title }: GamePlayerProps) {
           key={embedUrl}
           src={resolved}
           title={title}
-          className="aspect-video w-full min-h-[50vh] md:min-h-[70vh]"
+          className={
+            tall
+              ? "aspect-[960/520] w-full min-h-[min(70vh,520px)] max-h-[85vh]"
+              : "aspect-video w-full min-h-[50vh] md:min-h-[70vh]"
+          }
           sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"
           allow="fullscreen"
           onLoad={() => setLoading(false)}

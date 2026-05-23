@@ -45,4 +45,14 @@ const game = new Phaser.Game(config);
 window.__pnPhaserGame = game;
 window.__pnGameState = gameState;
 
+const refit = () => {
+  if (game.scale) game.scale.refresh();
+};
+window.addEventListener('resize', refit);
+window.addEventListener('orientationchange', refit);
+if (typeof ResizeObserver !== 'undefined') {
+  const parent = document.getElementById('game');
+  if (parent) new ResizeObserver(refit).observe(parent);
+}
+
 export default game;

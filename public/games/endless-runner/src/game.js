@@ -444,6 +444,7 @@ class Game extends Phaser.Scene {
         }
         this.jump += 1;
       }
+      if (pn) pn.jump = false;
     }
 
     if (!this.player.body.touching.down) {

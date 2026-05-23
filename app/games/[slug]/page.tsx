@@ -61,7 +61,11 @@ export default async function GamePage({ params }: PageProps) {
         <FavoriteButton slug={game.slug} />
       </div>
 
-      <GamePlayer embedUrl={game.embedUrl} title={game.title} />
+      <GamePlayer
+        embedUrl={game.embedUrl}
+        title={game.title}
+        tall={game.slug === "endless-runner"}
+      />
 
       <div className="mt-6 flex flex-wrap gap-2">
         {game.categories.map((cat) => (
