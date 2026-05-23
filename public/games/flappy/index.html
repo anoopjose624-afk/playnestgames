@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flappy Sky</title>
+  <style>
+    body { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #0ea5e9; }
+    canvas { max-width: 100%; border: 2px solid #fff; }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="360" height="480"></canvas>
+  <script>
+    const c = document.getElementById("c"), ctx = c.getContext("2d");
+    let bird = { y: 200, vy: 0 }, pipes = [], frame = 0, score = 0, dead = false;
+    function flap() {
+      if (dead) { dead = false; bird = { y: 200, vy: 0 }; pipes = []; score = 0; frame = 0; return; }
+      bird.vy = -6;
+    }
+    document.addEventListener("keydown", e => { if (e.code === "Space") { e.preventDefault(); flap(); } });
+    c.addEventListener("click", flap);
+    function loop() {
+      frame++;
+      bird.vy += 0.35;
+      bird.y += bird.vy;
+      if (frame % 70 === 0) pipes.push({ x: c.width, gap: 120, top: 60 + Math.random() * 180 });
+      pipes.forEach(p => p.x -= 3);
+      pipes = pipes.filter(p => p.x > -60);
+      pipes.forEach(p => {
+        if (p.x < 55 && p.x + 50 > 35) {
+          if (bird.y < p.top || bird.y > p.top + p.gap) dead = true;
+        }
+        if (p.x === 30) score++;
+      });
+      if (bird.y < 0 || bird.y > c.height) dead = true;
+      ctx.fillStyle = "#7dd3fc"; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.fillStyle = "#22c55e";
+      pipes.forEach(p => {
+        ctx.fillRect(p.x, 0, 50, p.top);
+        ctx.fillRect(p.x, p.top + p.gap, 50, c.height);
+      });
+      ctx.fillStyle = "#facc15"; ctx.beginPath(); ctx.arc(50, bird.y, 14, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.font = "24px sans-serif"; ctx.fillText(score, c.width / 2 - 10, 50);
+      if (dead) ctx.fillText("Tap to restart", 100, 240);
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>

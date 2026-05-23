@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delivery Guy After Midnight</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="screen-menu" class="screen active">
+    <div class="rain-overlay"></div>
+    <div class="menu-bg-city"></div>
+    <div class="menu-content">
+      <div class="title-block">
+        <div class="title-sub">NIGHT SHIFT DELIVERY CO.</div>
+        <h1 class="game-title">DELIVERY GUY<br/><span>AFTER MIDNIGHT</span></h1>
+        <div class="title-blink">NIGHT 1 — 00:01 AM</div>
+      </div>
+      <nav class="menu-nav">
+        <button class="menu-btn" id="btn-start">START SHIFT</button>
+        <button class="menu-btn" id="btn-howto">HOW TO PLAY</button>
+        <button class="menu-btn" id="btn-settings">SETTINGS</button>
+      </nav>
+      <div class="menu-footer">
+        Every order is a contract. Every address, a destination.<br/>
+        <em>Some destinations don't exist on any map.</em>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-howto" class="screen">
+    <div class="rain-overlay"></div>
+    <div class="overlay-panel">
+      <h2>HOW TO PLAY</h2>
+      <div class="howto-grid">
+        <div class="howto-item"><span class="key">W A S D</span><p>Move scooter</p></div>
+        <div class="howto-item"><span class="key">MOUSE</span><p>Look around</p></div>
+        <div class="howto-item"><span class="key">E</span><p>Interact</p></div>
+        <div class="howto-item"><span class="key">F</span><p>Flashlight</p></div>
+        <div class="howto-item"><span class="key">TAB</span><p>Phone / orders</p></div>
+        <div class="howto-item"><span class="key">ESC</span><p>Pause</p></div>
+      </div>
+      <p class="howto-tip">Accept orders on your phone. Ride to the building. Use the elevator. Deliver before dawn.<br/>
+      <em>Not everything goes as expected after midnight.</em></p>
+      <button class="menu-btn" id="btn-howto-back">BACK</button>
+    </div>
+  </div>
+
+  <div id="screen-settings" class="screen">
+    <div class="rain-overlay"></div>
+    <div class="overlay-panel">
+      <h2>SETTINGS</h2>
+      <div class="setting-row">
+        <label>Master Volume</label>
+        <input type="range" id="vol-master" min="0" max="100" value="80" />
+        <span id="vol-master-val">80</span>
+      </div>
+      <div class="setting-row">
+        <label>Music Volume</label>
+        <input type="range" id="vol-music" min="0" max="100" value="60" />
+        <span id="vol-music-val">60</span>
+      </div>
+      <div class="setting-row">
+        <label>SFX Volume</label>
+        <input type="range" id="vol-sfx" min="0" max="100" value="80" />
+        <span id="vol-sfx-val">80</span>
+      </div>
+      <div class="setting-row">
+        <label>Subtitles</label>
+        <button class="toggle-btn active" id="toggle-subtitles">ON</button>
+      </div>
+      <button class="menu-btn" id="btn-settings-back">BACK</button>
+    </div>
+  </div>
+
+  <div id="screen-night-intro" class="screen">
+    <div class="night-intro-content">
+      <div class="night-label">NIGHT</div>
+      <div class="night-number" id="night-number">01</div>
+      <div class="night-time" id="night-time">12:00 AM</div>
+      <div class="night-quote" id="night-quote">"Just a normal shift. Probably."</div>
+    </div>
+  </div>
+
+  <div id="screen-game" class="screen">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hud">
+      <div id="hud-top">
+        <div id="hud-time">00:01 AM</div>
+        <div id="hud-status">ON DUTY</div>
+        <div id="hud-weather">Heavy Rain</div>
+      </div>
+      <div id="crosshair">+</div>
+      <div id="minimap-container">
+        <canvas id="minimap" width="150" height="150"></canvas>
+        <div id="minimap-label">MAP</div>
+      </div>
+      <div id="order-card" class="hidden">
+        <div class="order-header">ACTIVE ORDER</div>
+        <div id="order-customer"></div>
+        <div id="order-address"></div>
+        <div id="order-items"></div>
+        <div id="order-timer-bar"><div id="order-timer-fill"></div></div>
+      </div>
+      <div id="interact-prompt" class="hidden">
+        <span class="key-hint">E</span> <span id="interact-text">Interact</span>
+      </div>
+      <div id="subtitles" class="hidden"></div>
+      <div id="sanity-bar" class="hidden">
+        <div class="sanity-label">SANITY</div>
+        <div class="sanity-track"><div id="sanity-fill"></div></div>
+      </div>
+    </div>
+    <div id="phone-overlay" class="hidden">
+      <div class="phone-frame">
+        <div class="phone-statusbar">
+          <span>NIGHT DELIVERY CO.</span>
+          <span id="phone-time">12:01 AM</span>
+        </div>
+        <div class="phone-screen">
+          <div class="phone-tabs">
+            <button class="ptab active" data-tab="orders">Orders</button>
+            <button class="ptab" data-tab="map">Map</button>
+            <button class="ptab" data-tab="messages">Messages</button>
+          </div>
+          <div id="phone-orders" class="phone-panel active">
+            <h3>AVAILABLE ORDERS</h3>
+            <div id="order-list"></div>
+          </div>
+          <div id="phone-map" class="phone-panel">
+            <canvas id="phone-map-canvas" width="280" height="280"></canvas>
+            <div id="phone-map-info"></div>
+          </div>
+          <div id="phone-messages" class="phone-panel">
+            <div id="message-list"></div>
+          </div>
+        </div>
+        <div class="phone-home-bar"></div>
+      </div>
+    </div>
+    <div id="pause-menu" class="hidden">
+      <div class="overlay-panel compact">
+        <h2>PAUSED</h2>
+        <button class="menu-btn" id="btn-resume">RESUME SHIFT</button>
+        <button class="menu-btn danger" id="btn-quit">QUIT TO MENU</button>
+      </div>
+    </div>
+    <div id="event-overlay" class="hidden"></div>
+    <div id="dialogue-box" class="hidden">
+      <div class="dialogue-speaker" id="dialogue-speaker"></div>
+      <div class="dialogue-text" id="dialogue-text"></div>
+      <div class="dialogue-choices" id="dialogue-choices"></div>
+      <div class="dialogue-hint">[ E ] Continue</div>
+    </div>
+  </div>
+
+  <div id="screen-gameover" class="screen">
+    <div class="rain-overlay"></div>
+    <div class="gameover-content">
+      <div class="go-icon">☠</div>
+      <h2 id="go-title">SHIFT ENDED</h2>
+      <p id="go-reason">You clocked out.</p>
+      <div id="go-stats"></div>
+      <button class="menu-btn" id="btn-retry">TRY AGAIN</button>
+      <button class="menu-btn" id="btn-go-menu">MAIN MENU</button>
+    </div>
+  </div>
+
+  <script src="js/utils/audio.js"></script>
+  <script src="js/utils/helpers.js"></script>
+  <script src="js/systems/deliverySystem.js"></script>
+  <script src="js/systems/eventSystem.js"></script>
+  <script src="js/systems/dialogueSystem.js"></script>
+  <script src="js/systems/phoneSystem.js"></script>
+  <script src="js/entities/player.js"></script>
+  <script src="js/entities/building.js"></script>
+  <script src="js/entities/elevator.js"></script>
+  <script src="js/scenes/mainScene.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

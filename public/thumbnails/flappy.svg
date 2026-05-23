@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#7dd3fc"/>
+  <rect x="250" y="60" width="50" height="180" fill="#22c55e"/>
+  <ellipse cx="120" cy="150" rx="24" ry="18" fill="#facc15"/>
+  <text x="200" y="260" text-anchor="middle" fill="#0c4a6e" font-family="sans-serif" font-size="26" font-weight="bold">Flappy</text>
+</svg>

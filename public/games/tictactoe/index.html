@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tic Tac Toe</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: #334155; color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .board { display: grid; grid-template-columns: repeat(3, 90px); gap: 8px; }
+    .cell { width: 90px; height: 90px; background: #475569; border: none; border-radius: 12px; font-size: 42px; font-weight: bold; cursor: pointer; color: #fff; }
+    .cell:hover { background: #64748b; }
+    p { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <p id="status">Your turn (X)</p>
+  <div class="board" id="board"></div>
+  <script>
+    let board = Array(9).fill(""), player = "X", over = false;
+    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    const el = document.getElementById("board"), status = document.getElementById("status");
+    function check(w) {
+      return wins.some(([a,b,c]) => board[a] === w && board[b] === w && board[c] === w);
+    }
+    function cpu() {
+      const empty = board.map((v,i) => v ? -1 : i).filter(i => i >= 0);
+      if (!empty.length) return;
+      for (const i of empty) {
+        board[i] = "O";
+        if (check("O")) { render(); return; }
+        board[i] = "";
+      }
+      for (const i of empty) {
+        board[i] = "X";
+        if (check("X")) { board[i] = "O"; render(); return; }
+        board[i] = "";
+      }
+      board[empty[Math.floor(Math.random() * empty.length)]] = "O";
+      render();
+    }
+    function render() {
+      el.innerHTML = "";
+      board.forEach((v, i) => {
+        const btn = document.createElement("button");
+        btn.className = "cell";
+        btn.textContent = v;
+        btn.disabled = !!v || over || player !== "X";
+        btn.onclick = () => {
+          if (over || board[i]) return;
+          board[i] = "X";
+          if (check("X")) { status.textContent = "You win!"; over = true; render(); return; }
+          if (board.every(c => c)) { status.textContent = "Draw!"; over = true; render(); return; }
+          player = "O";
+          status.textContent = "CPU thinking...";
+          setTimeout(() => { cpu(); if (check("O")) { status.textContent = "CPU wins!"; over = true; }
+            else if (board.every(c => c)) { status.textContent = "Draw!"; over = true; }
+            else { player = "X"; status.textContent = "Your turn (X)"; }
+            render();
+          }, 400);
+          render();
+        };
+        el.appendChild(btn);
+      });
+    }
+    render();
+  </script>
+</body>
+</html>

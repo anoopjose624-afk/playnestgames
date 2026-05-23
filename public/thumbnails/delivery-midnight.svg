@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1020"/>
+      <stop offset="100%" stop-color="#080a0f"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#sky)"/>
+  <rect y="180" width="400" height="120" fill="#0a0e14"/>
+  <rect x="40" y="120" width="50" height="100" fill="#0d1a30" stroke="#00f5ff" stroke-width="2"/>
+  <rect x="110" y="90" width="60" height="130" fill="#1a0d30" stroke="#ff2d78" stroke-width="2"/>
+  <rect x="200" y="140" width="45" height="80" fill="#0d1a10" stroke="#39ff14" stroke-width="2"/>
+  <rect x="280" y="100" width="70" height="120" fill="#0d1a30" stroke="#00f5ff" stroke-width="2"/>
+  <ellipse cx="200" cy="240" rx="90" ry="12" fill="rgba(0,245,255,0.15)"/>
+  <circle cx="320" cy="200" r="28" fill="#f5e642" opacity="0.9"/>
+  <text x="320" y="206" text-anchor="middle" fill="#080a0f" font-family="monospace" font-size="22" font-weight="bold">=�</text>
+  <text x="200" y="275" text-anchor="middle" fill="#00f5ff" font-family="monospace" font-size="14" letter-spacing="2">AFTER MIDNIGHT</text>
+  <text x="200" y="40" text-anchor="middle" fill="#ff2d78" font-family="sans-serif" font-size="22" font-weight="bold">Delivery Guy</text>
+</svg>

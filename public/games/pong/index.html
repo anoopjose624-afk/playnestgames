@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pong</title>
+  <style>
+    body { margin: 0; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; color: #fff; font-family: system-ui, sans-serif; }
+    canvas { border: 2px solid #38bdf8; max-width: 100%; }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="600" height="360"></canvas>
+  <script>
+    const c = document.getElementById("c"), ctx = c.getContext("2d");
+    let ball = { x: 300, y: 180, vx: 4, vy: 3 }, p1 = 140, p2 = 140, s1 = 0, s2 = 0;
+    const ph = 70, pw = 12;
+    function loop() {
+      ball.x += ball.vx; ball.y += ball.vy;
+      if (ball.y < 10 || ball.y > c.height - 10) ball.vy *= -1;
+      if (ball.x < 30 + pw && ball.y > p1 && ball.y < p1 + ph) { ball.vx = Math.abs(ball.vx); ball.vx += 0.2; }
+      if (ball.x > c.width - 40 && ball.y > p2 && ball.y < p2 + ph) { ball.vx = -Math.abs(ball.vx); ball.vx -= 0.2; }
+      if (ball.x < 0) { s2++; reset(); }
+      if (ball.x > c.width) { s1++; reset(); }
+      p2 = Math.max(20, Math.min(c.height - ph - 20, p2 + (ball.y - (p2 + ph/2)) * 0.08));
+      if (s1 >= 5 || s2 >= 5) { ctx.fillStyle = "#fff"; ctx.font = "32px sans-serif"; ctx.fillText("Winner: " + (s1 >= 5 ? "You" : "CPU"), 200, 180); return; }
+      ctx.fillStyle = "#0f172a"; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.setLineDash([8, 12]); ctx.strokeStyle = "#334155"; ctx.beginPath(); ctx.moveTo(c.width/2, 0); ctx.lineTo(c.width/2, c.height); ctx.stroke();
+      ctx.fillStyle = "#38bdf8"; ctx.fillRect(16, p1, pw, ph);
+      ctx.fillStyle = "#f472b6"; ctx.fillRect(c.width - 28, p2, pw, ph);
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(ball.x, ball.y, 10, 0, Math.PI * 2); ctx.fill();
+      ctx.font = "24px sans-serif"; ctx.fillText(s1 + " - " + s2, c.width/2 - 20, 40);
+      requestAnimationFrame(loop);
+    }
+    function reset() { ball = { x: 300, y: 180, vx: (Math.random() > 0.5 ? 4 : -4), vy: (Math.random() - 0.5) * 6 }; }
+    document.addEventListener("mousemove", e => {
+      const r = c.getBoundingClientRect();
+      p1 = (e.clientY - r.top) * (c.height / r.height) - ph / 2;
+    });
+    document.addEventListener("touchmove", e => { e.preventDefault(); const t = e.touches[0]; const r = c.getBoundingClientRect(); p1 = (t.clientY - r.top) * (c.height / r.height) - ph / 2; }, { passive: false });
+    loop();
+  </script>
+</body>
+</html>

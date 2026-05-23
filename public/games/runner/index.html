@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sky Runner</title>
+  <style>
+    body { margin: 0; background: #0c4a6e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+    canvas { max-width: 100%; border: 2px solid #38bdf8; }
+    p { color: #fff; font-family: system-ui, sans-serif; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="480" height="280"></canvas>
+  <p>Space or tap to jump</p>
+  <script>
+    const c = document.getElementById("c"), ctx = c.getContext("2d");
+    let y = 180, vy = 0, grounded = true, obs = [], frame = 0, score = 0, dead = false;
+    function jump() { if (grounded && !dead) { vy = -11; grounded = false; } }
+    document.addEventListener("keydown", e => { if (e.code === "Space") { e.preventDefault(); if (dead) { dead = false; score = 0; obs = []; y = 180; } else jump(); } });
+    c.addEventListener("click", () => { if (dead) { dead = false; score = 0; obs = []; y = 180; } else jump(); });
+    function loop() {
+      frame++;
+      vy += 0.5; y += vy;
+      if (y >= 180) { y = 180; vy = 0; grounded = true; }
+      if (frame % 90 === 0) obs.push({ x: c.width, h: 30 + Math.random() * 40 });
+      obs.forEach(o => o.x -= 5);
+      obs = obs.filter(o => o.x > -40);
+      score = Math.floor(frame / 10);
+      for (const o of obs) {
+        if (o.x < 70 && o.x + 30 > 40 && y + 20 > 180 - o.h) dead = true;
+      }
+      ctx.fillStyle = "#7dd3fc"; ctx.fillRect(0, 0, c.width, 140);
+      ctx.fillStyle = "#0369a1"; ctx.fillRect(0, 140, c.width, 140);
+      ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.arc(60, y, 16, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#166534";
+      obs.forEach(o => ctx.fillRect(o.x, 180 - o.h, 28, o.h));
+      ctx.fillStyle = "#fff"; ctx.font = "18px sans-serif"; ctx.fillText("Score: " + score, 10, 30);
+      if (dead) ctx.fillText("Game Over - jump to restart", 120, 150);
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>

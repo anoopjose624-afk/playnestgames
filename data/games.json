@@ -1,0 +1,123 @@
+[
+  {
+    "id": "snake",
+    "slug": "snake",
+    "title": "Snake Classic",
+    "description": "Guide the snake to eat apples and grow longer. Avoid hitting the walls or yourself!",
+    "thumbnail": "/thumbnails/snake.svg",
+    "embedUrl": "/games/snake/index.html",
+    "categories": ["arcade", "classic"],
+    "featured": true,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "pong",
+    "slug": "pong",
+    "title": "Pong Duel",
+    "description": "Classic paddle vs paddle action. First to 5 points wins the match.",
+    "thumbnail": "/thumbnails/pong.svg",
+    "embedUrl": "/games/pong/index.html",
+    "categories": ["arcade", "sports"],
+    "featured": true,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "clicker",
+    "slug": "clicker",
+    "title": "Cosmic Clicker",
+    "description": "Tap to collect stardust and upgrade your cosmic empire in this idle clicker.",
+    "thumbnail": "/thumbnails/clicker.svg",
+    "embedUrl": "/games/clicker/index.html",
+    "categories": ["casual", "puzzle"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "memory",
+    "slug": "memory",
+    "title": "Memory Match",
+    "description": "Flip cards and find matching pairs. Train your brain with fewer moves.",
+    "thumbnail": "/thumbnails/memory.svg",
+    "embedUrl": "/games/memory/index.html",
+    "categories": ["puzzle", "brain"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "runner",
+    "slug": "runner",
+    "title": "Sky Runner",
+    "description": "Jump over obstacles and survive as long as you can in this endless runner.",
+    "thumbnail": "/thumbnails/runner.svg",
+    "embedUrl": "/games/runner/index.html",
+    "categories": ["action", "arcade"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "breakout",
+    "slug": "breakout",
+    "title": "Brick Breaker",
+    "description": "Bounce the ball and clear every brick. Power-ups make it even more fun.",
+    "thumbnail": "/thumbnails/breakout.svg",
+    "embedUrl": "/games/breakout/index.html",
+    "categories": ["arcade", "classic"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "2048",
+    "slug": "2048",
+    "title": "2048 Tiles",
+    "description": "Slide numbered tiles and combine them to reach the elusive 2048 tile.",
+    "thumbnail": "/thumbnails/2048.svg",
+    "embedUrl": "/games/2048/index.html",
+    "categories": ["puzzle", "brain"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "flappy",
+    "slug": "flappy",
+    "title": "Flappy Sky",
+    "description": "Tap to fly through narrow gaps. How far can you go without crashing?",
+    "thumbnail": "/thumbnails/flappy.svg",
+    "embedUrl": "/games/flappy/index.html",
+    "categories": ["action", "casual"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "tictactoe",
+    "slug": "tictactoe",
+    "title": "Tic Tac Toe",
+    "description": "Play against the computer in this timeless strategy game.",
+    "thumbnail": "/thumbnails/tictactoe.svg",
+    "embedUrl": "/games/tictactoe/index.html",
+    "categories": ["puzzle", "casual"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "whack",
+    "slug": "whack",
+    "title": "Whack-a-Mole",
+    "description": "Hit the moles before they hide. Beat the clock for a high score.",
+    "thumbnail": "/thumbnails/whack.svg",
+    "embedUrl": "/games/whack/index.html",
+    "categories": ["arcade", "casual"],
+    "featured": false,
+    "publisher": "PlayNest"
+  },
+  {
+    "id": "delivery-midnight",
+    "slug": "delivery-midnight",
+    "title": "Delivery Guy After Midnight",
+    "description": "Night-shift food delivery in a rainy neon city. Orders get stranger after midnight—ride your scooter, use the phone app, and survive the elevator.",
+    "thumbnail": "/thumbnails/delivery-midnight.svg",
+    "embedUrl": "/games/delivery-midnight/index.html",
+    "categories": ["horror", "adventure", "casual"],
+    "featured": true,
+    "publisher": "PlayNest"
+  }
+]

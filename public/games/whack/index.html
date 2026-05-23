@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Whack-a-Mole</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: #713f12; color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 100px); gap: 12px; }
+    .hole { width: 100px; height: 100px; background: #451a03; border-radius: 50%; display: flex; align-items: flex-end; justify-content: center; cursor: pointer; overflow: hidden; }
+    .mole { font-size: 48px; transform: translateY(100%); transition: transform 0.15s; }
+    .hole.up .mole { transform: translateY(0); }
+    p { font-size: 18px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <p id="info">Score: 0 | Time: 30</p>
+  <div class="grid" id="grid"></div>
+  <script>
+    const grid = document.getElementById("grid");
+    const holes = [];
+    for (let i = 0; i < 9; i++) {
+      const h = document.createElement("div");
+      h.className = "hole";
+      h.innerHTML = '<span class="mole">🐹</span>';
+      h.onclick = () => {
+        if (h.classList.contains("up")) { score++; h.classList.remove("up"); document.getElementById("info").textContent = "Score: " + score + " | Time: " + time; }
+      };
+      grid.appendChild(h);
+      holes.push(h);
+    }
+    let score = 0, time = 30, active = -1;
+    setInterval(() => {
+      if (time <= 0) return;
+      if (active >= 0) holes[active].classList.remove("up");
+      active = Math.floor(Math.random() * 9);
+      holes[active].classList.add("up");
+      setTimeout(() => holes[active].classList.remove("up"), 700);
+    }, 900);
+    setInterval(() => {
+      if (time <= 0) return;
+      time--;
+      document.getElementById("info").textContent = "Score: " + score + " | Time: " + time;
+      if (time === 0) document.getElementById("info").textContent = "Done! Final score: " + score;
+    }, 1000);
+  </script>
+</body>
+</html>

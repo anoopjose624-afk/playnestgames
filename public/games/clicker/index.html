@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cosmic Clicker</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: linear-gradient(180deg, #1e1b4b, #312e81); color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    button { width: 160px; height: 160px; border-radius: 50%; border: none; background: linear-gradient(135deg, #a78bfa, #7c3aed); font-size: 48px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    button:active { transform: scale(0.95); }
+    .stats { margin-top: 24px; text-align: center; }
+    .upgrade { margin-top: 16px; padding: 12px 24px; background: rgba(255,255,255,0.15); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; }
+    .upgrade:disabled { opacity: 0.4; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <button id="tap">★</button>
+  <div class="stats">
+    <p id="score">0 stardust</p>
+    <p id="rate">0 per second</p>
+    <button class="upgrade" id="auto">Auto Collector (50)</button>
+    <button class="upgrade" id="multi">Multiplier x2 (200)</button>
+  </div>
+  <script>
+    let score = 0, rate = 0, mult = 1, autoCost = 50, multiCost = 200;
+    const scoreEl = document.getElementById("score"), rateEl = document.getElementById("rate");
+    document.getElementById("tap").onclick = () => { score += mult; update(); };
+    document.getElementById("auto").onclick = () => {
+      if (score >= autoCost) { score -= autoCost; rate += 1; autoCost = Math.floor(autoCost * 1.5); update(); }
+    };
+    document.getElementById("multi").onclick = () => {
+      if (score >= multiCost) { score -= multiCost; mult *= 2; multiCost *= 3; update(); }
+    };
+    function update() {
+      scoreEl.textContent = Math.floor(score) + " stardust";
+      rateEl.textContent = rate + " per second (x" + mult + " tap)";
+      document.getElementById("auto").disabled = score < autoCost;
+      document.getElementById("auto").textContent = "Auto Collector (" + autoCost + ")";
+      document.getElementById("multi").disabled = score < multiCost;
+      document.getElementById("multi").textContent = "Multiplier x2 (" + multiCost + ")";
+    }
+    setInterval(() => { score += rate * mult * 0.1; update(); }, 100);
+    update();
+  </script>
+</body>
+</html>
