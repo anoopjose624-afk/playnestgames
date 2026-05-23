@@ -11,6 +11,9 @@ const MainScene = (() => {
     frozenTimer: 0,
     deliverableNearby: false,
     insideBuilding: false,
+    currentBuilding: null,
+    readyToDeliver: false,
+    elevatorBusy: false,
   };
 
   const ROADS = [
@@ -27,12 +30,35 @@ const MainScene = (() => {
     mmCtx = document.getElementById("minimap").getContext("2d");
     resize();
     window.addEventListener("resize", resize);
-    for (let i = 0; i < 180; i++) raindrops.push({ x: Math.random() * 1200, y: Math.random() * 900, speed: 250 + Math.random() * 150, len: 10 + Math.random() * 8, a: 0.3 });
+    for (let i = 0; i < 180; i++) {
+      raindrops.push({
+        x: Math.random() * 1200,
+        y: Math.random() * 900,
+        speed: 250 + Math.random() * 150,
+        len: 10 + Math.random() * 8,
+      });
+    }
+  }
+
+  function reset() {
+    state.insideBuilding = false;
+    state.currentBuilding = null;
+    state.readyToDeliver = false;
+    state.elevatorBusy = false;
+    state.shadowFigures = [];
+    state.timeFrozen = false;
+    Elevator.close();
   }
 
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+  }
+
+  function getTargetBuilding() {
+    const order = DeliverySystem.getActiveOrder();
+    if (!order) return null;
+    return Building.getById(order.buildingId);
   }
 
   function update(dt) {
@@ -43,6 +69,7 @@ const MainScene = (() => {
     }
     state.cameraX = Helpers.lerp(state.cameraX, Player.x - canvas.width / 2, 0.12);
     state.cameraY = Helpers.lerp(state.cameraY, Player.y - canvas.height / 2, 0.12);
+
     raindrops.forEach((d) => {
       d.y += d.speed * dt;
       d.x += d.speed * 0.12 * dt;
@@ -51,16 +78,20 @@ const MainScene = (() => {
         d.x = state.cameraX + Math.random() * canvas.width;
       }
     });
+
     if (state.lightFlicker) {
       state.flickerTimer -= dt;
       if (state.flickerTimer <= 0) state.lightFlicker = false;
     }
+
     state.shadowFigures = state.shadowFigures.filter((s) => {
       s.a -= dt * 0.6;
       return s.a > 0;
     });
+
     checkInteract();
-    if (DeliverySystem.getActiveOrder() && Math.random() < dt * 0.004) {
+
+    if (GameSession.isPlaying() && DeliverySystem.getActiveOrder() && Math.random() < dt * 0.003) {
       EventSystem.tryTrigger(SceneAPI);
     }
   }
@@ -68,52 +99,125 @@ const MainScene = (() => {
   function checkInteract() {
     const prompt = document.getElementById("interact-prompt");
     const text = document.getElementById("interact-text");
-    const near = Building.getNearestEntrance(Player.x, Player.y, 48);
-    if (near && !state.insideBuilding) {
+    const order = DeliverySystem.getActiveOrder();
+
+    if (state.insideBuilding && state.readyToDeliver && order) {
       prompt.classList.remove("hidden");
-      text.textContent = `Enter ${near.name}`;
-      state.deliverableNearby = false;
-      return;
-    }
-    if (state.insideBuilding && DeliverySystem.getActiveOrder()) {
-      prompt.classList.remove("hidden");
-      text.textContent = "Knock / Deliver";
+      text.textContent = `Deliver to Unit ${order.unit}`;
       state.deliverableNearby = true;
       return;
     }
+
+    if (state.insideBuilding && state.elevatorBusy) {
+      prompt.classList.add("hidden");
+      state.deliverableNearby = false;
+      return;
+    }
+
+    const near = Building.getNearestEntrance(Player.x, Player.y, 52);
+    if (near && !state.insideBuilding && order) {
+      const match = order.buildingId === near.id;
+      prompt.classList.remove("hidden");
+      text.textContent = match ? `Enter ${near.name}` : `Wrong building — go to ${Building.getById(order.buildingId)?.name || "marker"}`;
+      state.deliverableNearby = false;
+      return;
+    }
+
+    if (near && !state.insideBuilding && !order) {
+      prompt.classList.remove("hidden");
+      text.textContent = `Enter ${near.name} (no active order)`;
+      state.deliverableNearby = false;
+      return;
+    }
+
     prompt.classList.add("hidden");
     state.deliverableNearby = false;
   }
 
   function handleInteract() {
-    const near = Building.getNearestEntrance(Player.x, Player.y, 48);
-    if (near && !state.insideBuilding) {
-      state.insideBuilding = true;
-      Player.enterBuilding();
-      Elevator.open(near);
+    if (!GameSession.isPlaying()) return;
+
+    const order = DeliverySystem.getActiveOrder();
+
+    if (state.insideBuilding && state.readyToDeliver && order) {
+      completeDelivery(order);
       return;
     }
-    if (state.deliverableNearby) {
-      const order = DeliverySystem.getActiveOrder();
-      if (!order) return;
-      AudioSystem.playKnock(3);
-      if (Math.random() < 0.35 + EventSystem.horrorLevel * 0.1) {
-        setTimeout(() => EventSystem.tryTrigger(SceneAPI, Helpers.pick(["vanish", "shadow", "gps"])), 1200);
-      } else {
-        setTimeout(() => {
-          DialogueSystem.show({
-            speaker: order.customer,
-            lines: ["...Thanks.", "Door closes before you can ask anything."],
-            onDone: () => {
-              DeliverySystem.deliverOrder(order.id);
-              state.insideBuilding = false;
-              Elevator.close();
-              Player.exitBuilding();
-            },
-          });
-        }, 1000);
-      }
+
+    const near = Building.getNearestEntrance(Player.x, Player.y, 52);
+    if (!near || state.insideBuilding) return;
+
+    if (!order) {
+      Helpers.toast("Accept an order on your phone (TAB)", "var(--neon-yellow)");
+      return;
     }
+
+    if (order.buildingId !== near.id) {
+      Helpers.toast("GPS says this is the wrong building!", "var(--text-horror)");
+      AudioSystem.playStaticGlitch(0.25);
+      return;
+    }
+
+    enterBuilding(near, order);
+  }
+
+  function enterBuilding(building, order) {
+    state.insideBuilding = true;
+    state.currentBuilding = building;
+    state.readyToDeliver = false;
+    state.elevatorBusy = true;
+    Player.enterBuilding();
+    Helpers.toast(`Elevator to floor ${order.floor}...`);
+    AudioSystem.playElevatorDing();
+
+    setTimeout(() => {
+      state.elevatorBusy = false;
+      state.readyToDeliver = true;
+      Helpers.subtitle(`Knock on Unit ${order.unit}. Press E to deliver.`, 3500);
+      if (Math.random() < 0.2 + EventSystem.horrorLevel * 0.08) {
+        EventSystem.tryTrigger(SceneAPI, Helpers.pick(["flicker", "shadow", "funny"]));
+      }
+    }, 900);
+  }
+
+  function completeDelivery(order) {
+    AudioSystem.playKnock(2);
+    if (Math.random() < 0.22 + EventSystem.horrorLevel * 0.12) {
+      Player.decreaseSanity(8);
+      EventSystem.tryTrigger(SceneAPI, Helpers.pick(["vanish", "shadow"]));
+      setTimeout(() => {
+        if (DeliverySystem.getActiveOrder()?.id === order.id) {
+          DeliverySystem.deliverOrder(order.id);
+          exitBuilding();
+        }
+      }, 1400);
+      return;
+    }
+
+    DialogueSystem.show({
+      speaker: order.customer,
+      lines: ["...Thanks.", "Door closes before you can ask anything."],
+      onDone: () => {
+        DeliverySystem.deliverOrder(order.id);
+        exitBuilding();
+        const remaining = SHIFT_GOAL - DeliverySystem.getNightStats().delivered;
+        if (remaining > 0) {
+          Helpers.toast(`${remaining} more deliveries to win the shift`);
+          const next = DeliverySystem.getAvailableOrders()[0];
+          if (next) DeliverySystem.acceptOrder(next.id);
+        }
+      },
+    });
+  }
+
+  function exitBuilding() {
+    state.insideBuilding = false;
+    state.currentBuilding = null;
+    state.readyToDeliver = false;
+    state.elevatorBusy = false;
+    Elevator.close();
+    Player.exitBuilding();
+    Helpers.toast("Back on the scooter");
   }
 
   function draw() {
@@ -121,44 +225,65 @@ const MainScene = (() => {
     const H = canvas.height;
     const cx = state.cameraX;
     const cy = state.cameraY;
-    ctx.fillStyle = "#060810";
+
+    ctx.fillStyle = state.insideBuilding ? "#0a0812" : "#060810";
     ctx.fillRect(0, 0, W, H);
 
-    ROADS.forEach((r) => {
-      const horiz = r.y1 === r.y2;
-      ctx.fillStyle = "#0e1622";
-      if (horiz) ctx.fillRect(r.x1 - cx, r.y1 - 28 - cy, r.x2 - r.x1, 56);
-      else ctx.fillRect(r.x1 - 28 - cx, r.y1 - cy, 56, r.y2 - r.y1);
-    });
+    if (!state.insideBuilding) {
+      ROADS.forEach((r) => {
+        const horiz = r.y1 === r.y2;
+        ctx.fillStyle = "#0e1622";
+        if (horiz) ctx.fillRect(r.x1 - cx, r.y1 - 28 - cy, r.x2 - r.x1, 56);
+        else ctx.fillRect(r.x1 - 28 - cx, r.y1 - cy, 56, r.y2 - r.y1);
+      });
 
-    Building.drawAll(ctx, cx, cy);
+      Building.drawAll(ctx, cx, cy);
 
-    state.shadowFigures.forEach((s) => {
-      ctx.globalAlpha = s.a;
-      ctx.fillStyle = "#000";
-      ctx.fillRect(s.x - cx - 6, s.y - cy - 30, 12, 35);
-      ctx.globalAlpha = 1;
-    });
+      const target = getTargetBuilding();
+      if (target && GameSession.isPlaying()) Building.drawWaypoint(ctx, cx, cy, target);
+
+      state.shadowFigures.forEach((s) => {
+        ctx.globalAlpha = s.a;
+        ctx.fillStyle = "#000";
+        ctx.fillRect(s.x - cx - 6, s.y - cy - 30, 12, 35);
+        ctx.globalAlpha = 1;
+      });
+    } else {
+      ctx.fillStyle = "#111827";
+      ctx.fillRect(W * 0.2 - cx * 0, H * 0.15, W * 0.6, H * 0.7);
+      ctx.strokeStyle = "rgba(0,245,255,0.25)";
+      ctx.strokeRect(W * 0.2, H * 0.15, W * 0.6, H * 0.7);
+      ctx.fillStyle = "rgba(201,214,227,0.5)";
+      ctx.font = "14px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("APARTMENT HALLWAY", W / 2, H * 0.2);
+      if (state.elevatorBusy) {
+        ctx.fillStyle = "var(--neon-cyan)";
+        ctx.fillText("Elevator rising...", W / 2, H / 2);
+      }
+    }
 
     const px = W / 2;
     const py = H / 2;
-    ctx.save();
-    ctx.translate(px, py);
-    ctx.rotate(Player.angle + Math.PI / 2);
-    if (Player.state.onScooter) {
-      ctx.fillStyle = "#ddd";
-      ctx.fillRect(-6, -14, 12, 28);
-      ctx.fillStyle = "#ff9";
-      ctx.beginPath();
-      ctx.ellipse(0, -18, 4, 3, 0, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      ctx.fillStyle = "#c9d6e3";
-      ctx.fillRect(-5, -12, 10, 22);
+    if (!state.insideBuilding) {
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(Player.angle + Math.PI / 2);
+      if (Player.state.onScooter) {
+        ctx.fillStyle = "#ddd";
+        ctx.fillRect(-6, -14, 12, 28);
+        ctx.fillStyle = "#ff9";
+        ctx.beginPath();
+        ctx.ellipse(0, -18, 4, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = "#c9d6e3";
+        ctx.fillRect(-5, -12, 10, 22);
+      }
+      ctx.restore();
     }
-    ctx.restore();
 
-    if (Player.state.flashlightOn) {
+    if (Player.state.flashlightOn && !state.insideBuilding) {
       ctx.fillStyle = "rgba(0,0,0,0.55)";
       ctx.fillRect(0, 0, W, H);
       ctx.save();
@@ -191,7 +316,8 @@ const MainScene = (() => {
       ctx.stroke();
     });
 
-    Building.drawMinimap(mmCtx, Player.x, Player.y);
+    const order = DeliverySystem.getActiveOrder();
+    Building.drawMinimap(mmCtx, Player.x, Player.y, order?.buildingId ?? null);
   }
 
   function flickerLights(sec = 3) {
@@ -206,6 +332,7 @@ const MainScene = (() => {
       y: Player.y + Math.sin(a) * 180,
       a: 0.85,
     });
+    Player.decreaseSanity(4);
   }
 
   function freezeTime(sec = 4) {
@@ -218,10 +345,13 @@ const MainScene = (() => {
 
   return {
     init,
+    reset,
     update,
     draw,
     handleInteract,
     SceneAPI,
-    get timeFrozen() { return state.timeFrozen; },
+    get timeFrozen() {
+      return state.timeFrozen;
+    },
   };
 })();

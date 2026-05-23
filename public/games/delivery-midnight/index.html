@@ -91,6 +91,7 @@
         <div id="hud-status">ON DUTY</div>
         <div id="hud-weather">Heavy Rain</div>
       </div>
+      <div id="hud-score">Score 0 · 0/3 deliveries · $0.00</div>
       <div id="crosshair">+</div>
       <div id="minimap-container">
         <canvas id="minimap" width="150" height="150"></canvas>
@@ -146,6 +147,13 @@
         <button class="menu-btn danger" id="btn-quit">QUIT TO MENU</button>
       </div>
     </div>
+    <div id="touch-controls" class="hidden">
+      <div id="joystick-zone"><div id="joystick-knob"></div></div>
+      <div id="touch-actions">
+        <button type="button" id="touch-phone" class="touch-btn" aria-label="Phone">TAB</button>
+        <button type="button" id="touch-interact" class="touch-btn touch-btn-primary" aria-label="Interact">E</button>
+      </div>
+    </div>
     <div id="event-overlay" class="hidden"></div>
     <div id="dialogue-box" class="hidden">
       <div class="dialogue-speaker" id="dialogue-speaker"></div>
@@ -177,6 +185,7 @@
   <script src="js/entities/building.js"></script>
   <script src="js/entities/elevator.js"></script>
   <script src="js/scenes/mainScene.js"></script>
+  <script src="js/systems/touchControls.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
