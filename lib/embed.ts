@@ -1,7 +1,6 @@
 const ALLOWED_HOSTS = [
   "localhost",
   "127.0.0.1",
-  "playnest-games.vercel.app",
   "playnestgames.vercel.app",
   "html-classic.itch.zone",
   "itch.io",

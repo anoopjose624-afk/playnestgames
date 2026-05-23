@@ -6,6 +6,7 @@ import { GameCard } from "@/components/GameCard";
 import { GamePlayer } from "@/components/GamePlayer";
 import { RecentTracker } from "@/components/RecentTracker";
 import { getGameBySlug, getGames, getRelatedGames } from "@/lib/games";
+import { getSiteUrl } from "@/lib/site-url";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -22,8 +23,7 @@ export async function generateMetadata({
   const game = getGameBySlug(slug);
   if (!game) return { title: "Game not found" };
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = getSiteUrl();
 
   return {
     title: game.title,

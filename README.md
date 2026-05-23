@@ -33,7 +33,7 @@ Deploy to [Vercel](https://vercel.com) — zero config for Next.js:
 npm run build
 ```
 
-Set `NEXT_PUBLIC_SITE_URL` to your production domain in the Vercel project settings (e.g. `https://playnest-games.vercel.app`).
+Set `NEXT_PUBLIC_SITE_URL` to `https://playnestgames.vercel.app` in the Vercel project settings.
 
 ## Adding games
 

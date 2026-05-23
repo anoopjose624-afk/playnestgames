@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,9 +24,10 @@ export const metadata: Metadata = {
   },
   description:
     "Play free browser games instantly. Arcade, puzzle, action, and casual games — no download required.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  ),
+  metadataBase: new URL(getSiteUrl()),
+  verification: {
+    google: "googleedb50724668d4c8c",
+  },
   openGraph: {
     siteName: "PlayNest",
     type: "website",
@@ -51,6 +54,7 @@ export default function RootLayout({
         </Suspense>
         <main className="flex-1">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

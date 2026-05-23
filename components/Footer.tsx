@@ -10,7 +10,15 @@ export function Footer() {
           </Link>{" "}
           — free browser games. For learning and fun.
         </p>
-        <p className="mt-2 text-xs">Games hosted locally for demo purposes.</p>
+        <nav className="mt-4 flex flex-wrap justify-center gap-4 text-xs">
+          <Link href="/privacy" className="hover:text-white">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="hover:text-white">
+            Terms of Use
+          </Link>
+        </nav>
+        <p className="mt-3 text-xs">© {new Date().getFullYear()} PlayNest</p>
       </div>
     </footer>
   );
