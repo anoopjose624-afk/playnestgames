@@ -37,4 +37,10 @@ Set `NEXT_PUBLIC_SITE_URL` to `https://playnestgames.vercel.app` in the Vercel p
 
 ## Adding games
 
-Edit `data/games.json`. Use embed URLs under `/games/...` (self-hosted) or allowlisted external domains (see `lib/embed.ts`).
+1. Put static files in `public/games/[slug]/` (include `index.html`).
+2. Add an entry to `data/games.json` with:
+   - `"embedUrl": "/games/[slug]/embed"` (iframe — rewritten to `index.html`)
+   - Page URL for players: `/games/[slug]` (Next.js, no `index.html` needed)
+3. Add `public/thumbnails/[slug].svg`.
+
+See `lib/game-urls.ts` and `lib/embed.ts`.

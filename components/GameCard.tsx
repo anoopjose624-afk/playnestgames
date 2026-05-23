@@ -15,7 +15,7 @@ export function GameCard({ game }: GameCardProps) {
       <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-violet-900/50 to-fuchsia-900/50">
         <Image
           src={game.thumbnail}
-          alt=""
+          alt={game.title}
           fill
           className="object-cover transition duration-300 group-hover:scale-105"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"

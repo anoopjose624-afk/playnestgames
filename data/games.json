@@ -60,7 +60,7 @@
     "title": "Endless Runner",
     "description": "Run, double-jump, and slide through a neon obstacle course. Collect coins, dodge birds and missiles, and chase the high score.",
     "thumbnail": "/thumbnails/endless-runner.svg",
-    "embedUrl": "/games/endless-runner/index.html",
+    "embedUrl": "/games/endless-runner/embed",
     "categories": ["action", "arcade"],
     "featured": true,
     "publisher": "PlayNest"

@@ -9,6 +9,29 @@ const ALLOWED_HOSTS = [
   "games.html5games.com",
 ];
 
+/**
+ * Resolve catalog embedUrl to the iframe src.
+ * Self-hosted games use /games/[slug]/embed (see next.config rewrites).
+ */
+export function resolveEmbedUrl(url: string): string {
+  if (!url.startsWith("/")) {
+    return url;
+  }
+  // Already using embed route or explicit index.html
+  if (url.endsWith("/embed") || url.endsWith("/index.html")) {
+    return url;
+  }
+  // Trailing slash only — avoid loading Next.js page inside iframe
+  if (url.match(/^\/games\/[^/]+\/$/)) {
+    return url.replace(/\/$/, "/embed");
+  }
+  // Bare /games/slug would iframe the Next.js wrapper (broken)
+  if (url.match(/^\/games\/[^/]+$/)) {
+    return `${url}/embed`;
+  }
+  return url;
+}
+
 export function isEmbedUrlAllowed(url: string): boolean {
   try {
     const parsed = new URL(url, "http://localhost");
@@ -25,11 +48,4 @@ export function isEmbedUrlAllowed(url: string): boolean {
   } catch {
     return false;
   }
-}
-
-export function resolveEmbedUrl(url: string): string {
-  if (url.startsWith("/")) {
-    return url;
-  }
-  return url;
 }

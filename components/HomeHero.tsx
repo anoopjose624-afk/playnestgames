@@ -13,7 +13,7 @@ export function HomeHero({ game }: HomeHeroProps) {
         <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black/30 shadow-lg ring-1 ring-white/10 sm:order-2">
           <Image
             src={game.thumbnail}
-            alt=""
+            alt={game.title}
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 50vw"
