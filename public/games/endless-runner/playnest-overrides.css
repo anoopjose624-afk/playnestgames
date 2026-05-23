@@ -1,0 +1,80 @@
+/**
+ * PlayNest embed styles for Endless Runner (Phaser).
+ */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  overflow: hidden;
+}
+
+#game-shell {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  box-sizing: border-box;
+}
+
+#game {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game canvas {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 48px);
+  touch-action: none;
+}
+
+/* Username form on boot screen */
+#name-form {
+  max-width: min(90vw, 400px) !important;
+  width: 100% !important;
+}
+
+#name-form input {
+  width: 100% !important;
+  max-width: 100%;
+  font-size: 16px !important;
+  box-sizing: border-box;
+}
+
+/* Slide button between jump and edge */
+.pn-btn-slide {
+  position: absolute;
+  right: max(92px, calc(env(safe-area-inset-right) + 92px));
+  bottom: max(28px, env(safe-area-inset-bottom));
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(234, 88, 12, 0.8);
+  color: #fff;
+  font-weight: bold;
+  font-size: 20px;
+  pointer-events: auto;
+  touch-action: manipulation;
+  z-index: 10000;
+}
+
+@media (max-width: 380px) {
+  .pn-btn-slide {
+    right: max(80px, calc(env(safe-area-inset-right) + 80px));
+    width: 48px;
+    height: 48px;
+  }
+}
