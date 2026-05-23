@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#0c1222"/>
+  <rect x="150" y="80" width="28" height="28" fill="#00f5ff"/>
+  <rect x="178" y="80" width="28" height="28" fill="#00f5ff"/>
+  <rect x="206" y="80" width="28" height="28" fill="#00f5ff"/>
+  <rect x="234" y="80" width="28" height="28" fill="#00f5ff"/>
+  <rect x="178" y="108" width="28" height="28" fill="#ff2d78"/>
+  <rect x="206" y="108" width="28" height="28" fill="#ff2d78"/>
+  <rect x="206" y="136" width="28" height="28" fill="#f5e642"/>
+  <rect x="234" y="136" width="28" height="28" fill="#f5e642"/>
+  <text x="200" y="250" text-anchor="middle" fill="#00f5ff" font-family="sans-serif" font-size="28" font-weight="bold">Tetris</text>
+</svg>

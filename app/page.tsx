@@ -19,8 +19,8 @@ export default function HomePage() {
           PlayNest
         </h1>
         <p className="mt-2 max-w-xl text-white/60">
-          Play free games online — ten titles for now. Pick a game and start
-          playing instantly in your browser.
+          Play free games online — {allGames.length} titles and growing. Pick a
+          game and start playing instantly in your browser.
         </p>
       </section>
 

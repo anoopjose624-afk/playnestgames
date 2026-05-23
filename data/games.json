@@ -119,5 +119,82 @@
     "categories": ["horror", "adventure", "casual"],
     "featured": true,
     "publisher": "PlayNest"
+  },
+  {
+    "id": "bounce",
+    "slug": "bounce",
+    "title": "Bounce",
+    "description": "Break bricks and keep the ball in play. Choose Speed, Random, or Bricks mode and chase the high score.",
+    "thumbnail": "/thumbnails/bounce.svg",
+    "embedUrl": "/games/bounce/index.html",
+    "categories": ["arcade", "classic"],
+    "featured": false,
+    "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "defender",
+    "slug": "defender",
+    "title": "Defender",
+    "description": "Tower defense on neon maps. Build towers, stop waves of monsters, and protect your base.",
+    "thumbnail": "/thumbnails/defender.svg",
+    "embedUrl": "/games/defender/index.html",
+    "categories": ["strategy", "arcade"],
+    "featured": true,
+    "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "pacman",
+    "slug": "pacman",
+    "title": "Pacman",
+    "description": "Eat dots, dodge ghosts, and clear the maze in this retro arcade classic.",
+    "thumbnail": "/thumbnails/pacman.svg",
+    "embedUrl": "/games/pacman/index.html",
+    "categories": ["arcade", "classic"],
+    "featured": true,
+    "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "tetris",
+    "slug": "tetris",
+    "title": "Tetris",
+    "description": "Stack falling blocks, clear lines, and climb the levels in this timeless puzzle arcade game.",
+    "thumbnail": "/thumbnails/tetris.svg",
+    "embedUrl": "/games/tetris/index.html",
+    "categories": ["puzzle", "classic"],
+    "featured": true,
+    "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "classic-snake",
+    "slug": "classic-snake",
+    "title": "Classic Snake",
+    "description": "Grow your snake, grab food, and survive as long as you can without hitting yourself.",
+    "thumbnail": "/thumbnails/classic-snake.svg",
+    "embedUrl": "/games/classic-snake/index.html",
+    "categories": ["arcade", "classic"],
+    "featured": false,
+    "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "spider",
+    "slug": "spider",
+    "title": "Spider Solitaire",
+    "description": "Classic spider solitaire with 1, 2, or 4 suits. Build sequences and clear the tableau.",
+    "thumbnail": "/thumbnails/spider.svg",
+    "embedUrl": "/games/spider/index.html",
+    "categories": ["cards", "puzzle", "casual"],
+    "featured": false,
+    "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "puzzle",
+    "slug": "puzzle",
+    "title": "Tile Puzzle",
+    "description": "Slide and place tiles to complete the picture before time runs out.",
+    "thumbnail": "/thumbnails/puzzle.svg",
+    "embedUrl": "/games/puzzle/index.html",
+    "categories": ["puzzle", "casual"],
+    "featured": false,
+    "publisher": "Tomás Malbrán"
   }
 ]
