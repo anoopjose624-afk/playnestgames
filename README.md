@@ -27,20 +27,45 @@ Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SITE_URL` for productio
 
 ## Deploy
 
-Deploy to [Vercel](https://vercel.com) — zero config for Next.js:
+Production runs on Vercel project **[playnest](https://vercel.com)** (not `poki-mini`).
+
+| Setting | Value |
+|--------|--------|
+| GitHub repo | `anoopjose624-afk/playnestgames` |
+| Production branch | `main` |
+| Live URL | https://playnestgames.vercel.app |
+
+**Pushes to `main` auto-deploy to production.** No manual step needed after merge.
+
+Local preview or a one-off production deploy:
 
 ```bash
-npm run build
+npx vercel link --project playnest
+npx vercel deploy --prod
 ```
 
-Set `NEXT_PUBLIC_SITE_URL` to `https://playnestgames.vercel.app` in the Vercel project settings.
+Set `NEXT_PUBLIC_SITE_URL` to `https://playnestgames.vercel.app` in the Vercel **playnest** project environment variables.
 
 ## Adding games
 
-1. Put static files in `public/games/[slug]/` (include `index.html`).
-2. Add an entry to `data/games.json` with:
-   - `"embedUrl": "/games/[slug]/embed"` (iframe — rewritten to `index.html`)
-   - Page URL for players: `/games/[slug]` (Next.js, no `index.html` needed)
-3. Add `public/thumbnails/[slug].svg`.
+Every game inherits the platform shell automatically via `GameFrame` + `GameOverlay` on `/games/[slug]`.
 
-See `lib/game-urls.ts` and `lib/embed.ts`.
+1. Put static files in `public/games/[slug]/` (include `index.html`).
+2. Load playnest-engine in `index.html` for mobile controls and audio:
+   ```html
+   <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
+   <script type="module">
+     import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+     PlayNest.init({ gameId: "your-slug", lockPage: true });
+   </script>
+   ```
+3. Add an entry to `data/games.json`:
+   - `"embedUrl": "/games/[slug]/embed"` (required — iframe target)
+   - `"aspectRatio": "16:9"` (optional: `"4:3"`, `"960:520"`)
+   - `"addedAt": "YYYY-MM-DD"` (optional — shows in Newly Added)
+   - `"badge": "new"` | `"hot"` (optional)
+4. Add `public/thumbnails/[slug].svg` (4:3 ratio).
+
+Page URL for players: `/games/[slug]`. Do not use that URL as iframe `src`.
+
+See `components/game/GameFrame.tsx`, `lib/game-frame.ts`, `lib/embed.ts`.

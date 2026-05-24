@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useCallback, useRef } from "react";
+import { useFavoriteSlugs } from "@/lib/use-favorites-store";
 
 export function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") ?? "";
   const inputRef = useRef<HTMLInputElement>(null);
+  const favoriteSlugs = useFavoriteSlugs();
 
   const onSubmit = useCallback(
     (e: FormEvent) => {
@@ -24,45 +26,60 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#1a1040]/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-50 h-[var(--pn-header-h)] border-b border-[var(--pn-border-subtle)] bg-[var(--pn-bg-base)]/90 backdrop-blur-xl">
+      <div className="mx-auto flex h-full max-w-7xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2 text-xl font-extrabold tracking-tight text-white"
+          className="flex shrink-0 items-center gap-2.5 text-lg font-extrabold tracking-tight text-[var(--pn-text-primary)]"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-lg shadow-lg">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--pn-accent-cyan)] to-[var(--pn-accent-purple)] text-base font-black text-white shadow-[0_0_20px_var(--pn-glow-purple)]">
             P
           </span>
-          PlayNest
+          <span className="hidden sm:inline pn-gradient-text">PlayNest</span>
         </Link>
 
-        <form onSubmit={onSubmit} className="min-w-0 flex-1 sm:max-w-md">
+        <form onSubmit={onSubmit} className="min-w-0 flex-1 sm:max-w-lg">
           <label htmlFor="search" className="sr-only">
             Search games
           </label>
           <div className="relative">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--pn-text-muted)]">
+              ⌕
+            </span>
             <input
               key={initialQuery}
               ref={inputRef}
               id="search"
               type="search"
               defaultValue={initialQuery}
-              placeholder="Search games..."
-              className="w-full rounded-full border border-white/15 bg-white/10 py-2.5 pl-4 pr-10 text-sm text-white placeholder:text-white/50 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400/40"
+              placeholder="Search games…"
+              className="w-full rounded-full border border-[var(--pn-border-subtle)] bg-white/5 py-2.5 pl-10 pr-4 text-sm text-[var(--pn-text-primary)] placeholder:text-[var(--pn-text-muted)] focus:border-[var(--pn-accent-purple)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--pn-accent-purple)]/25"
             />
-            <button
-              type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-violet-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-violet-400"
-            >
-              Go
-            </button>
           </div>
         </form>
 
-        <nav className="flex shrink-0 items-center gap-4 text-sm font-medium text-white/80">
-          <Link href="/favorites" className="hover:text-white">
-            Favorites
+        <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <Link
+            href="/favorites"
+            className="relative flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-[var(--pn-text-secondary)] transition hover:bg-white/5 hover:text-white"
+          >
+            ♥
+            <span className="hidden md:inline">Favorites</span>
+            {favoriteSlugs.length > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--pn-accent-purple)] px-1 text-[10px] font-bold text-white">
+                {favoriteSlugs.length}
+              </span>
+            )}
           </Link>
+          <button
+            type="button"
+            disabled
+            title="Profiles coming soon"
+            aria-label="Profile (coming soon)"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--pn-border-subtle)] bg-white/5 text-sm text-[var(--pn-text-muted)]"
+          >
+            👤
+          </button>
         </nav>
       </div>
     </header>

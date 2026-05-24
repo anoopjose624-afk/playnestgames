@@ -1,8 +1,59 @@
 @import "tailwindcss";
 
+/* ─── PlayNest Design System ─────────────────────────────────────────────
+   Eye-friendly dark gaming UI: deep charcoal/navy, soft contrast, neon accents.
+   Avoid pure #000 / #fff for long-session comfort.
+   ───────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #0f0820;
-  --foreground: #f5f3ff;
+  /* Surfaces */
+  --pn-bg-deep: #0c0e14;
+  --pn-bg-base: #12151f;
+  --pn-bg-elevated: #181c28;
+  --pn-bg-card: rgba(24, 28, 40, 0.72);
+  --pn-bg-glass: rgba(22, 26, 38, 0.65);
+
+  /* Text */
+  --pn-text-primary: #e8eaf0;
+  --pn-text-secondary: #9ba3b8;
+  --pn-text-muted: #6b7289;
+
+  /* Accents */
+  --pn-accent-blue: #3b82f6;
+  --pn-accent-cyan: #22d3ee;
+  --pn-accent-purple: #a855f7;
+  --pn-accent-violet: #8b5cf6;
+  --pn-accent-indigo: #6366f1;
+  --pn-accent-orange: #f97316;
+  --pn-accent-red: #ef4444;
+  --pn-accent-rose: #f43f5e;
+  --pn-accent-green: #22c55e;
+  --pn-accent-gold: #eab308;
+  --pn-accent-teal: #14b8a6;
+
+  /* Glow / borders */
+  --pn-glow-blue: rgba(59, 130, 246, 0.35);
+  --pn-glow-purple: rgba(168, 85, 247, 0.35);
+  --pn-border-subtle: rgba(255, 255, 255, 0.06);
+  --pn-border-medium: rgba(255, 255, 255, 0.12);
+  --pn-border-glow: rgba(139, 92, 246, 0.45);
+
+  /* Layout */
+  --pn-header-h: 4rem;
+  --pn-category-bar-h: 3.25rem;
+  --pn-radius-sm: 0.5rem;
+  --pn-radius-md: 0.75rem;
+  --pn-radius-lg: 1rem;
+  --pn-radius-xl: 1.25rem;
+  --pn-radius-2xl: 1.5rem;
+
+  /* Shadows */
+  --pn-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --pn-shadow-glow: 0 0 32px var(--pn-glow-purple);
+
+  /* Legacy compat */
+  --background: var(--pn-bg-deep);
+  --foreground: var(--pn-text-primary);
 }
 
 @theme inline {
@@ -12,8 +63,174 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 body {
-  background: linear-gradient(180deg, #1a1040 0%, #0f0820 40%, #0a0618 100%);
-  color: var(--foreground);
+  background: var(--pn-bg-deep);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(168, 85, 247, 0.08), transparent),
+    linear-gradient(180deg, var(--pn-bg-base) 0%, var(--pn-bg-deep) 100%);
+  color: var(--pn-text-primary);
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Prevent layout shift while playing */
+body.pn-play-active {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* ─── Utility classes ─────────────────────────────────────────────────── */
+
+.pn-glass {
+  background: var(--pn-bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--pn-border-subtle);
+}
+
+.pn-card {
+  background: var(--pn-bg-card);
+  border: 1px solid var(--pn-border-subtle);
+  border-radius: var(--pn-radius-2xl);
+  box-shadow: var(--pn-shadow-card);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.pn-card:hover {
+  border-color: var(--pn-border-glow);
+  box-shadow: var(--pn-shadow-card), 0 0 20px var(--pn-glow-purple);
+}
+
+.pn-gradient-text {
+  background: linear-gradient(135deg, var(--pn-accent-cyan), var(--pn-accent-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pn-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--pn-text-primary);
+}
+
+.pn-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--pn-bg-elevated) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    var(--pn-bg-elevated) 100%
+  );
+  background-size: 200% 100%;
+  animation: pn-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--pn-radius-md);
+}
+
+@keyframes pn-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pn-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 12px var(--pn-glow-blue);
+  }
+  50% {
+    box-shadow: 0 0 24px var(--pn-glow-purple);
+  }
+}
+
+@keyframes pn-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pn-animate-in {
+  animation: pn-fade-in 0.4s ease forwards;
+}
+
+/* Game frame container — stable, no horizontal scroll bleed */
+.pn-game-shell {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  isolation: isolate;
+  contain: layout style;
+}
+
+.pn-game-frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--pn-radius-xl);
+  background: var(--pn-bg-deep);
+  border: 1px solid var(--pn-border-medium);
+  box-shadow:
+    var(--pn-shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pn-game-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  vertical-align: top;
+}
+
+.pn-game-frame:fullscreen,
+.pn-game-frame:-webkit-full-screen {
+  border-radius: 0;
+  border: none;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+}
+
+.pn-game-frame:fullscreen iframe,
+.pn-game-frame:-webkit-full-screen iframe {
+  width: 100%;
+  height: 100%;
+}
+
+/* Category bar horizontal scroll */
+.pn-category-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pn-category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar on game overlay toolbar on mobile */
+.pn-overlay-toolbar {
+  scrollbar-width: none;
+}
+
+.pn-overlay-toolbar::-webkit-scrollbar {
+  display: none;
 }

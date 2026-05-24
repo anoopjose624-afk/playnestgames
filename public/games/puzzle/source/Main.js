@@ -142,6 +142,21 @@ function initDomListeners() {
         e.preventDefault();
     });
 
+    // Touch support for mobile drag-and-drop
+    document.addEventListener("touchmove", (e) => {
+        if (partial && e.touches[0]) {
+            partial.drag(e.touches[0]);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    document.addEventListener("touchend", (e) => {
+        if (partial && e.changedTouches[0]) {
+            puzzle.dropAny(e.changedTouches[0], partial);
+            partial = null;
+            e.preventDefault();
+        }
+    });
+
     document.addEventListener("keydown", (e) => {
         const code = KeyCode.keyToCode(e.keyCode, false);
         if (puzzle && shortcuts[code]) {

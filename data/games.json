@@ -5,7 +5,7 @@
     "title": "Snake Classic",
     "description": "Guide the snake to eat apples and grow longer. Avoid hitting the walls or yourself!",
     "thumbnail": "/thumbnails/snake.svg",
-    "embedUrl": "/games/snake/index.html",
+    "embedUrl": "/games/snake/embed",
     "categories": ["arcade", "classic"],
     "featured": true,
     "publisher": "PlayNest"
@@ -16,7 +16,7 @@
     "title": "Pong Duel",
     "description": "Classic paddle vs paddle action. First to 5 points wins the match.",
     "thumbnail": "/thumbnails/pong.svg",
-    "embedUrl": "/games/pong/index.html",
+    "embedUrl": "/games/pong/embed",
     "categories": ["arcade", "sports"],
     "featured": true,
     "publisher": "PlayNest"
@@ -27,7 +27,7 @@
     "title": "Cosmic Clicker",
     "description": "Tap to collect stardust and upgrade your cosmic empire in this idle clicker.",
     "thumbnail": "/thumbnails/clicker.svg",
-    "embedUrl": "/games/clicker/index.html",
+    "embedUrl": "/games/clicker/embed",
     "categories": ["casual", "puzzle"],
     "featured": false,
     "publisher": "PlayNest"
@@ -38,7 +38,7 @@
     "title": "Memory Match",
     "description": "Flip cards and find matching pairs. Train your brain with fewer moves.",
     "thumbnail": "/thumbnails/memory.svg",
-    "embedUrl": "/games/memory/index.html",
+    "embedUrl": "/games/memory/embed",
     "categories": ["puzzle", "brain"],
     "featured": false,
     "publisher": "PlayNest"
@@ -49,7 +49,7 @@
     "title": "Sky Runner",
     "description": "Jump over obstacles and survive as long as you can in this endless runner.",
     "thumbnail": "/thumbnails/runner.svg",
-    "embedUrl": "/games/runner/index.html",
+    "embedUrl": "/games/runner/embed",
     "categories": ["action", "arcade"],
     "featured": false,
     "publisher": "PlayNest"
@@ -63,7 +63,10 @@
     "embedUrl": "/games/endless-runner/embed",
     "categories": ["action", "arcade"],
     "featured": true,
-    "publisher": "PlayNest"
+    "publisher": "PlayNest",
+    "aspectRatio": "960:520",
+    "addedAt": "2026-05-20",
+    "badge": "hot"
   },
   {
     "id": "breakout",
@@ -71,7 +74,7 @@
     "title": "Brick Breaker",
     "description": "Bounce the ball and clear every brick. Power-ups make it even more fun.",
     "thumbnail": "/thumbnails/breakout.svg",
-    "embedUrl": "/games/breakout/index.html",
+    "embedUrl": "/games/breakout/embed",
     "categories": ["arcade", "classic"],
     "featured": false,
     "publisher": "PlayNest"
@@ -82,7 +85,7 @@
     "title": "2048 Tiles",
     "description": "Slide numbered tiles and combine them to reach the elusive 2048 tile.",
     "thumbnail": "/thumbnails/2048.svg",
-    "embedUrl": "/games/2048/index.html",
+    "embedUrl": "/games/2048/embed",
     "categories": ["puzzle", "brain"],
     "featured": false,
     "publisher": "PlayNest"
@@ -93,7 +96,7 @@
     "title": "Flappy Sky",
     "description": "Tap to fly through narrow gaps. How far can you go without crashing?",
     "thumbnail": "/thumbnails/flappy.svg",
-    "embedUrl": "/games/flappy/index.html",
+    "embedUrl": "/games/flappy/embed",
     "categories": ["action", "casual"],
     "featured": false,
     "publisher": "PlayNest"
@@ -104,7 +107,7 @@
     "title": "Tic Tac Toe",
     "description": "Play against the computer in this timeless strategy game.",
     "thumbnail": "/thumbnails/tictactoe.svg",
-    "embedUrl": "/games/tictactoe/index.html",
+    "embedUrl": "/games/tictactoe/embed",
     "categories": ["puzzle", "casual"],
     "featured": false,
     "publisher": "PlayNest"
@@ -115,7 +118,7 @@
     "title": "Whack-a-Mole",
     "description": "Hit the moles before they hide. Beat the clock for a high score.",
     "thumbnail": "/thumbnails/whack.svg",
-    "embedUrl": "/games/whack/index.html",
+    "embedUrl": "/games/whack/embed",
     "categories": ["arcade", "casual"],
     "featured": false,
     "publisher": "PlayNest"
@@ -126,10 +129,12 @@
     "title": "Delivery Guy After Midnight",
     "description": "Night-shift food delivery in a rainy neon city. Orders get stranger after midnight—ride your scooter, use the phone app, and survive the elevator.",
     "thumbnail": "/thumbnails/delivery-midnight.svg",
-    "embedUrl": "/games/delivery-midnight/index.html",
+    "embedUrl": "/games/delivery-midnight/embed",
     "categories": ["horror", "adventure", "casual"],
     "featured": true,
-    "publisher": "PlayNest"
+    "publisher": "PlayNest",
+    "addedAt": "2026-05-15",
+    "badge": "new"
   },
   {
     "id": "bounce",
@@ -137,7 +142,7 @@
     "title": "Bounce",
     "description": "Break bricks and keep the ball in play. Choose Speed, Random, or Bricks mode and chase the high score.",
     "thumbnail": "/thumbnails/bounce.svg",
-    "embedUrl": "/games/bounce/index.html",
+    "embedUrl": "/games/bounce/embed",
     "categories": ["arcade", "classic"],
     "featured": false,
     "publisher": "Tomás Malbrán"
@@ -148,7 +153,7 @@
     "title": "Defender",
     "description": "Tower defense on neon maps. Build towers, stop waves of monsters, and protect your base.",
     "thumbnail": "/thumbnails/defender.svg",
-    "embedUrl": "/games/defender/index.html",
+    "embedUrl": "/games/defender/embed",
     "categories": ["strategy", "arcade"],
     "featured": true,
     "publisher": "Tomás Malbrán"
@@ -159,7 +164,7 @@
     "title": "Pacman",
     "description": "Eat dots, dodge ghosts, and clear the maze in this retro arcade classic.",
     "thumbnail": "/thumbnails/pacman.svg",
-    "embedUrl": "/games/pacman/index.html",
+    "embedUrl": "/games/pacman/embed",
     "categories": ["arcade", "classic"],
     "featured": true,
     "publisher": "Tomás Malbrán"
@@ -170,7 +175,7 @@
     "title": "Tetris",
     "description": "Stack falling blocks, clear lines, and climb the levels in this timeless puzzle arcade game.",
     "thumbnail": "/thumbnails/tetris.svg",
-    "embedUrl": "/games/tetris/index.html",
+    "embedUrl": "/games/tetris/embed",
     "categories": ["puzzle", "classic"],
     "featured": true,
     "publisher": "Tomás Malbrán"
@@ -181,7 +186,7 @@
     "title": "Classic Snake",
     "description": "Grow your snake, grab food, and survive as long as you can without hitting yourself.",
     "thumbnail": "/thumbnails/classic-snake.svg",
-    "embedUrl": "/games/classic-snake/index.html",
+    "embedUrl": "/games/classic-snake/embed",
     "categories": ["arcade", "classic"],
     "featured": false,
     "publisher": "Tomás Malbrán"
@@ -192,7 +197,7 @@
     "title": "Spider Solitaire",
     "description": "Classic spider solitaire with 1, 2, or 4 suits. Build sequences and clear the tableau.",
     "thumbnail": "/thumbnails/spider.svg",
-    "embedUrl": "/games/spider/index.html",
+    "embedUrl": "/games/spider/embed",
     "categories": ["cards", "puzzle", "casual"],
     "featured": false,
     "publisher": "Tomás Malbrán"
@@ -203,7 +208,7 @@
     "title": "Tile Puzzle",
     "description": "Slide and place tiles to complete the picture before time runs out.",
     "thumbnail": "/thumbnails/puzzle.svg",
-    "embedUrl": "/games/puzzle/index.html",
+    "embedUrl": "/games/puzzle/embed",
     "categories": ["puzzle", "casual"],
     "featured": false,
     "publisher": "Tomás Malbrán"

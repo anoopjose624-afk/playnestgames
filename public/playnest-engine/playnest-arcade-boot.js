@@ -15,7 +15,7 @@ const control = script?.dataset?.control || "direction";
 
 const mobileOpts =
   control === "none"
-    ? false
+    ? { joystick: false, action: false, pause: true, onPause: () => dispatchNamedKey("p") }
     : {
         joystick: true,
         action: control === "tetris" || control === "action",
@@ -29,6 +29,13 @@ PlayNest.init({
   lockPage: true,
   toolbar: true,
   mobile: mobileOpts,
+});
+
+window.PlayNest = PlayNest;
+
+// Legacy arcade Sounds.js respects PlayNest mute
+document.addEventListener("playnest-mute-change", (e) => {
+  window.__pnForceMute = e.detail?.muted ?? false;
 });
 
 if (PlayNest.mobile) {

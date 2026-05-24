@@ -47,7 +47,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col font-sans">
         <Suspense
           fallback={
-            <header className="h-16 border-b border-white/10 bg-[#1a1040]/95" />
+            <header className="h-[var(--pn-header-h)] border-b border-[var(--pn-border-subtle)] bg-[var(--pn-bg-base)]/90" />
           }
         >
           <Header />

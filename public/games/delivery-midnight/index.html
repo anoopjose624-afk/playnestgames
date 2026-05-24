@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Delivery Guy After Midnight</title>
+  <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
   <link rel="stylesheet" href="css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
 </head>
@@ -175,6 +176,27 @@
     </div>
   </div>
 
+  <script type="module">
+    import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+    PlayNest.init({
+      gameId: "delivery-midnight",
+      lockPage: true,
+      toolbar: true,
+      mobile: {
+        joystick: false,
+        action: false,
+        pause: true,
+        onPause: () => {
+          const pause = document.getElementById("pause-menu");
+          const gameScreen = document.getElementById("screen-game");
+          if (gameScreen?.classList.contains("active") && pause) {
+            pause.classList.toggle("hidden");
+          }
+        },
+      },
+    });
+    window.PlayNest = PlayNest;
+  </script>
   <script src="js/utils/audio.js"></script>
   <script src="js/utils/helpers.js"></script>
   <script src="js/systems/deliverySystem.js"></script>

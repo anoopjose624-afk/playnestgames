@@ -12,7 +12,7 @@ export function GameGrid({
 }: GameGridProps) {
   if (games.length === 0) {
     return (
-      <p className="rounded-2xl bg-white/5 px-6 py-12 text-center text-white/60">
+      <p className="rounded-2xl border border-[var(--pn-border-subtle)] bg-white/5 px-6 py-12 text-center text-[var(--pn-text-muted)]">
         {emptyMessage}
       </p>
     );

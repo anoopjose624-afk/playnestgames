@@ -77,6 +77,7 @@ export default class AudioManager {
     this.muted = !this.muted;
     this._saveSettings();
     document.body.classList.toggle("pn-muted", this.muted);
+    document.dispatchEvent(new CustomEvent("playnest-mute-change", { detail: { muted: this.muted } }));
     return this.muted;
   }
 
@@ -84,6 +85,7 @@ export default class AudioManager {
     this.muted = !!value;
     this._saveSettings();
     document.body.classList.toggle("pn-muted", this.muted);
+    document.dispatchEvent(new CustomEvent("playnest-mute-change", { detail: { muted: this.muted } }));
   }
 
   /**

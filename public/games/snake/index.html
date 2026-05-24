@@ -2,41 +2,86 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Snake</title>
+  <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
   <style>
-    * { margin: 0; box-sizing: border-box; }
-    body { background: #052e16; color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-    canvas { background: #064e3b; border: 3px solid #4ade80; border-radius: 8px; max-width: 100%; }
-    p { margin-top: 12px; font-size: 14px; opacity: 0.8; }
+    body { background: #052e16; color: #fff; font-family: system-ui, sans-serif; }
+    canvas { background: #064e3b; border: 3px solid #4ade80; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <canvas id="c" width="400" height="400"></canvas>
-  <p>Arrow keys or swipe to move</p>
-  <script>
+  <div class="pn-game-wrap">
+    <canvas id="c" width="400" height="400"></canvas>
+    <p class="pn-hint">Arrows, swipe, or joystick to move</p>
+  </div>
+  <script type="module">
+    import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+    import { bridgeJoystickToKeys } from "/playnest-engine/keyboardBridge.js";
+
     const canvas = document.getElementById("c");
     const ctx = canvas.getContext("2d");
     const size = 20;
     const cols = canvas.width / size;
     let snake = [{ x: 10, y: 10 }];
     let dir = { x: 1, y: 0 };
+    let nextDir = { x: 1, y: 0 };
     let food = { x: 15, y: 10 };
     let score = 0;
     let over = false;
+    let highScore = 0;
+
+    PlayNest.init({
+      gameId: "snake",
+      lockPage: true,
+      toolbar: true,
+      canvas: "#c",
+      canvasSize: { baseWidth: 400, baseHeight: 400 },
+      mobile: { joystick: true, action: false, pause: true },
+    });
+    if (PlayNest.mobile) bridgeJoystickToKeys(PlayNest.mobile);
+    highScore = PlayNest.save.getHighScore();
+
+    const map = { ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 }, ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 } };
+    function setDir(d) {
+      if (d.x !== -dir.x || d.y !== -dir.y) nextDir = d;
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && over) reset();
+      const d = map[e.code];
+      if (d) setDir(d);
+    });
+    if (PlayNest.mobile) {
+      PlayNest.mobile.options.onSwipe = (type) => {
+        const sw = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
+        if (sw[type]) setDir(sw[type]);
+      };
+    }
+
+    function reset() {
+      snake = [{ x: 10, y: 10 }];
+      dir = { x: 1, y: 0 };
+      nextDir = { x: 1, y: 0 };
+      score = 0;
+      over = false;
+      randFood();
+    }
     function randFood() {
       food = { x: Math.floor(Math.random() * cols), y: Math.floor(Math.random() * cols) };
-      if (snake.some(s => s.x === food.x && s.y === food.y)) randFood();
+      if (snake.some((s) => s.x === food.x && s.y === food.y)) randFood();
     }
     function tick() {
       if (over) return;
+      dir = nextDir;
       const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
-      if (head.x < 0 || head.y < 0 || head.x >= cols || head.y >= cols || snake.some(s => s.x === head.x && s.y === head.y)) {
+      if (head.x < 0 || head.y < 0 || head.x >= cols || head.y >= cols || snake.some((s) => s.x === head.x && s.y === head.y)) {
         over = true;
+        PlayNest.sfx?.lose();
+        highScore = PlayNest.save.setHighScore(score);
         return;
       }
       snake.unshift(head);
-      if (head.x === food.x && head.y === food.y) { score++; randFood(); } else snake.pop();
+      if (head.x === food.x && head.y === food.y) { score++; PlayNest.sfx?.eat(); randFood(); } else snake.pop();
     }
     function draw() {
       ctx.fillStyle = "#064e3b";
@@ -49,17 +94,17 @@
       });
       ctx.fillStyle = "#fff";
       ctx.font = "16px sans-serif";
-      ctx.fillText("Score: " + score, 8, 24);
-      if (over) { ctx.fillText("Game Over - press Space", 80, 200); }
+      ctx.fillText("Score: " + score + "  Best: " + highScore, 8, 24);
+      if (over) ctx.fillText("Game Over — tap toolbar or Space", 40, 200);
     }
-    document.addEventListener("keydown", e => {
-      if (e.code === "Space" && over) { snake = [{ x: 10, y: 10 }]; dir = { x: 1, y: 0 }; score = 0; over = false; randFood(); return; }
-      const map = { ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 }, ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 } };
-      const d = map[e.code];
-      if (d && (d.x !== -dir.x || d.y !== -dir.y)) dir = d;
-    });
-    setInterval(() => { tick(); draw(); }, 120);
-    draw();
+    let last = 0;
+    function loop(now) {
+      if (now - last > 120) { tick(); last = now; }
+      draw();
+      requestAnimationFrame(loop);
+    }
+    randFood();
+    requestAnimationFrame(loop);
   </script>
 </body>
 </html>

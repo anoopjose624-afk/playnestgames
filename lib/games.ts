@@ -15,9 +15,32 @@ export function getFeaturedGames(): Game[] {
   return games.filter((g) => g.featured);
 }
 
-/** Spotlight game for the homepage hero (Endless Runner). */
 export function getHeroGame(): Game | undefined {
   return getGameBySlug("endless-runner") ?? getFeaturedGames()[0];
+}
+
+export function getMostPlayedGames(limit = 5): Game[] {
+  const featured = getFeaturedGames();
+  const rest = games.filter((g) => !g.featured);
+  return [...featured, ...rest].slice(0, limit);
+}
+
+export function getTrendingGames(limit = 5): Game[] {
+  const hot = games.filter((g) => g.badge === "hot" || g.featured);
+  const pool = hot.length >= limit ? hot : getFeaturedGames();
+  return [...pool]
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .slice(0, limit);
+}
+
+export function getNewlyAddedGames(limit = 5): Game[] {
+  const withDates = games.filter((g) => g.addedAt);
+  if (withDates.length > 0) {
+    return [...withDates]
+      .sort((a, b) => (b.addedAt ?? "").localeCompare(a.addedAt ?? ""))
+      .slice(0, limit);
+  }
+  return [...games].slice(-limit).reverse();
 }
 
 export function getGamesByCategory(category: string): Game[] {

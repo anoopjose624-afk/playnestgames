@@ -2,34 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Cosmic Clicker</title>
+  <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
   <style>
-    body { margin: 0; min-height: 100vh; background: linear-gradient(180deg, #1e1b4b, #312e81); color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    button { width: 160px; height: 160px; border-radius: 50%; border: none; background: linear-gradient(135deg, #a78bfa, #7c3aed); font-size: 48px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-    button:active { transform: scale(0.95); }
+    body { background: linear-gradient(180deg, #1e1b4b, #312e81); color: #fff; font-family: system-ui, sans-serif; }
+    #tap { width: min(160px, 40vw); height: min(160px, 40vw); border-radius: 50%; border: none; background: linear-gradient(135deg, #a78bfa, #7c3aed); font-size: clamp(32px, 10vw, 48px); cursor: pointer; touch-action: manipulation; }
+    #tap:active { transform: scale(0.95); }
     .stats { margin-top: 24px; text-align: center; }
-    .upgrade { margin-top: 16px; padding: 12px 24px; background: rgba(255,255,255,0.15); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; }
-    .upgrade:disabled { opacity: 0.4; cursor: not-allowed; }
+    .upgrade { margin-top: 16px; padding: 14px 24px; min-height: 48px; background: rgba(255,255,255,0.15); border: none; border-radius: 8px; color: #fff; font-size: 16px; touch-action: manipulation; }
+    .upgrade:disabled { opacity: 0.4; }
   </style>
 </head>
 <body>
-  <button id="tap">★</button>
-  <div class="stats">
-    <p id="score">0 stardust</p>
-    <p id="rate">0 per second</p>
-    <button class="upgrade" id="auto">Auto Collector (50)</button>
-    <button class="upgrade" id="multi">Multiplier x2 (200)</button>
+  <div class="pn-game-wrap">
+    <button id="tap" type="button">★</button>
+    <div class="stats pn-hud">
+      <p id="score">0 stardust</p>
+      <p id="rate">0 per second</p>
+      <button class="upgrade pn-touch-btn" id="auto" type="button">Auto Collector (50)</button>
+      <button class="upgrade pn-touch-btn" id="multi" type="button">Multiplier x2 (200)</button>
+    </div>
   </div>
-  <script>
-    let score = 0, rate = 0, mult = 1, autoCost = 50, multiCost = 200;
+  <script type="module">
+    import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+
+    PlayNest.init({
+      gameId: "clicker",
+      lockPage: true,
+      toolbar: true,
+      mobile: { joystick: false, action: false, pause: true },
+    });
+    const saved = PlayNest.save.loadAutoSave();
+    let score = saved?.score ?? 0, rate = saved?.rate ?? 0, mult = saved?.mult ?? 1;
+    let autoCost = saved?.autoCost ?? 50, multiCost = saved?.multiCost ?? 200;
+
     const scoreEl = document.getElementById("score"), rateEl = document.getElementById("rate");
-    document.getElementById("tap").onclick = () => { score += mult; update(); };
+    document.getElementById("tap").onclick = () => { score += mult; PlayNest.sfx?.click(); update(); };
     document.getElementById("auto").onclick = () => {
-      if (score >= autoCost) { score -= autoCost; rate += 1; autoCost = Math.floor(autoCost * 1.5); update(); }
+      if (score >= autoCost) { score -= autoCost; rate += 1; autoCost = Math.floor(autoCost * 1.5); PlayNest.sfx?.tap(); update(); }
     };
     document.getElementById("multi").onclick = () => {
-      if (score >= multiCost) { score -= multiCost; mult *= 2; multiCost *= 3; update(); }
+      if (score >= multiCost) { score -= multiCost; mult *= 2; multiCost *= 3; PlayNest.sfx?.match(); update(); }
     };
     function update() {
       scoreEl.textContent = Math.floor(score) + " stardust";
@@ -40,6 +54,7 @@
       document.getElementById("multi").textContent = "Multiplier x2 (" + multiCost + ")";
     }
     setInterval(() => { score += rate * mult * 0.1; update(); }, 100);
+    PlayNest.save.autoSave(3000, () => ({ score, rate, mult, autoCost, multiCost }));
     update();
   </script>
 </body>

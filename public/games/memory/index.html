@@ -2,25 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Memory Match</title>
+  <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
   <style>
-    body { margin: 0; min-height: 100vh; background: #3b0764; color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(4, 72px); gap: 10px; }
-    .card { width: 72px; height: 96px; background: #7c3aed; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; user-select: none; }
+    body { background: #3b0764; color: #fff; font-family: system-ui, sans-serif; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(64px, 72px)); gap: clamp(8px, 2vw, 10px); }
+    .card { aspect-ratio: 3/4; background: #7c3aed; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: clamp(24px, 8vw, 32px); cursor: pointer; touch-action: manipulation; min-height: 48px; }
     .card.flipped, .card.matched { background: #c4b5fd; color: #3b0764; }
     .card.matched { opacity: 0.6; }
-    p { margin-top: 16px; }
   </style>
 </head>
 <body>
-  <p id="moves">Moves: 0</p>
-  <div class="grid" id="grid"></div>
-  <script>
-    const emojis = ["🎮","🎯","🎲","🎪","🎨","🎭","🎸","🎺"];
+  <div class="pn-game-wrap">
+    <p id="moves" class="pn-hud">Moves: 0</p>
+    <div class="grid pn-responsive-grid" id="grid"></div>
+  </div>
+  <script type="module">
+    import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+    PlayNest.init({
+      gameId: "memory",
+      lockPage: true,
+      toolbar: true,
+      mobile: { joystick: false, action: false, pause: true },
+    });
+
+    const emojis = ["🎮", "🎯", "🎲", "🎪", "🎨", "🎭", "🎸", "🎺"];
     let cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
     let flipped = [], moves = 0, matched = 0;
     const grid = document.getElementById("grid"), movesEl = document.getElementById("moves");
+  const best = PlayNest.save.getHighScore() || 9999;
+
     cards.forEach((emoji, i) => {
       const el = document.createElement("div");
       el.className = "card";
@@ -29,6 +41,7 @@
         if (flipped.length === 2 || el.classList.contains("flipped") || el.classList.contains("matched")) return;
         el.classList.add("flipped");
         el.textContent = emoji;
+        PlayNest.sfx?.flip();
         flipped.push({ el, emoji });
         if (flipped.length === 2) {
           moves++;
@@ -38,9 +51,15 @@
             a.el.classList.add("matched");
             b.el.classList.add("matched");
             matched += 2;
+            PlayNest.sfx?.match();
             flipped = [];
-            if (matched === 16) movesEl.textContent = "You win in " + moves + " moves!";
+            if (matched === 16) {
+              if (moves < best) PlayNest.save.setHighScore(10000 - moves);
+              PlayNest.sfx?.win();
+              movesEl.textContent = "You win in " + moves + " moves! Best: " + (10000 - PlayNest.save.getHighScore());
+            }
           } else {
+            PlayNest.sfx?.tap();
             setTimeout(() => {
               a.el.classList.remove("flipped");
               b.el.classList.remove("flipped");

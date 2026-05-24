@@ -51,4 +51,7 @@ export function addRecentGame(slug: string): void {
   const current = getRecentSlugs().filter((s) => s !== slug);
   const next = [slug, ...current].slice(0, MAX_RECENT);
   localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("playnest-recent-change"));
+  }
 }

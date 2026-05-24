@@ -34,10 +34,11 @@ export default class Sounds {
      * @returns {Void}
      */
     play(sound) {
-        if (!this.mute) {
-            const audio = new Audio(`audio/${sound}.mp3`);
-            audio.play();
+        if (this.mute || window.__pnForceMute || window.PlayNest?.audio?.isMuted?.()) {
+            return;
         }
+        const audio = new Audio(`audio/${sound}.mp3`);
+        audio.play().catch(() => {});
     }
 
     /**

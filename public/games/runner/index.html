@@ -2,43 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Sky Runner</title>
+  <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
   <style>
-    body { margin: 0; background: #0c4a6e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-    canvas { max-width: 100%; border: 2px solid #38bdf8; }
-    p { color: #fff; font-family: system-ui, sans-serif; margin-top: 8px; }
+    body { background: #0c4a6e; color: #fff; font-family: system-ui, sans-serif; }
+    canvas { border: 2px solid #38bdf8; }
   </style>
 </head>
 <body>
-  <canvas id="c" width="480" height="280"></canvas>
-  <p>Space or tap to jump</p>
-  <script>
+  <div class="pn-game-wrap">
+    <canvas id="c" width="480" height="280"></canvas>
+    <p class="pn-hint">Space, tap screen, or action button to jump</p>
+  </div>
+  <script type="module">
+    import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+    import { bridgeActionToKey } from "/playnest-engine/keyboardBridge.js";
+
     const c = document.getElementById("c"), ctx = c.getContext("2d");
-    let y = 180, vy = 0, grounded = true, obs = [], frame = 0, score = 0, dead = false;
-    function jump() { if (grounded && !dead) { vy = -11; grounded = false; } }
-    document.addEventListener("keydown", e => { if (e.code === "Space") { e.preventDefault(); if (dead) { dead = false; score = 0; obs = []; y = 180; } else jump(); } });
-    c.addEventListener("click", () => { if (dead) { dead = false; score = 0; obs = []; y = 180; } else jump(); });
+    let y = 180, vy = 0, grounded = true, obs = [], frame = 0, score = 0, dead = false, deathSfx = false;
+    let highScore = 0;
+
+    PlayNest.init({
+      gameId: "runner",
+      lockPage: true,
+      toolbar: true,
+      canvas: "#c",
+      canvasSize: { baseWidth: 480, baseHeight: 280 },
+      mobile: { joystick: false, action: true, actionLabel: "↑", pause: true },
+    });
+    const lowEnd = PlayNest.isLowEnd();
+    if (PlayNest.mobile) {
+      bridgeActionToKey(PlayNest.mobile, "space");
+      PlayNest.mobile.options.onTap = () => jump();
+    }
+
+    function jump() {
+      if (dead) { dead = false; deathSfx = false; score = 0; frame = 0; obs = []; y = 180; PlayNest.sfx?.tap(); return; }
+      if (grounded && !dead) { vy = -11; grounded = false; PlayNest.sfx?.jump(); }
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space") { e.preventDefault(); jump(); }
+    });
+    c.addEventListener("click", jump);
+
     function loop() {
       frame++;
       vy += 0.5; y += vy;
       if (y >= 180) { y = 180; vy = 0; grounded = true; }
-      if (frame % 90 === 0) obs.push({ x: c.width, h: 30 + Math.random() * 40 });
-      obs.forEach(o => o.x -= 5);
-      obs = obs.filter(o => o.x > -40);
+      const spawnRate = lowEnd ? 110 : 90;
+      if (frame % spawnRate === 0) obs.push({ x: c.width, h: 30 + Math.random() * 40 });
+      obs.forEach((o) => { o.x -= 5; });
+      obs = obs.filter((o) => o.x > -40);
       score = Math.floor(frame / 10);
       for (const o of obs) {
         if (o.x < 70 && o.x + 30 > 40 && y + 20 > 180 - o.h) dead = true;
       }
+      if (dead && !deathSfx) { deathSfx = true; PlayNest.sfx?.lose(); }
+      if (!dead && score > highScore) highScore = score;
+      if (dead) PlayNest.save.setHighScore(highScore);
+
       ctx.fillStyle = "#7dd3fc"; ctx.fillRect(0, 0, c.width, 140);
       ctx.fillStyle = "#0369a1"; ctx.fillRect(0, 140, c.width, 140);
       ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.arc(60, y, 16, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = "#166534";
-      obs.forEach(o => ctx.fillRect(o.x, 180 - o.h, 28, o.h));
-      ctx.fillStyle = "#fff"; ctx.font = "18px sans-serif"; ctx.fillText("Score: " + score, 10, 30);
-      if (dead) ctx.fillText("Game Over - jump to restart", 120, 150);
+      obs.forEach((o) => ctx.fillRect(o.x, 180 - o.h, 28, o.h));
+      ctx.fillStyle = "#fff"; ctx.font = "18px sans-serif";
+      ctx.fillText("Score: " + score + "  Best: " + PlayNest.save.getHighScore(), 10, 30);
+      if (dead) ctx.fillText("Game Over — jump to restart", 100, 150);
       requestAnimationFrame(loop);
     }
+    highScore = PlayNest.save.getHighScore();
     loop();
   </script>
 </body>

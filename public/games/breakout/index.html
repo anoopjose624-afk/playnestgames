@@ -2,37 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Brick Breaker</title>
+  <link rel="stylesheet" href="/playnest-engine/playnest-mobile.css" />
   <style>
-    body { margin: 0; background: #1c1917; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    canvas { max-width: 100%; }
+    body { background: #1c1917; }
+    canvas { touch-action: none; }
   </style>
 </head>
 <body>
-  <canvas id="c" width="480" height="360"></canvas>
-  <script>
+  <div class="pn-game-wrap">
+    <canvas id="c" width="480" height="360"></canvas>
+    <p class="pn-hint">Touch/drag to move paddle</p>
+  </div>
+  <script type="module">
+    import PlayNest from "/playnest-engine/playnest-bootstrap.js";
+
     const c = document.getElementById("c"), ctx = c.getContext("2d");
     let paddle = 200, ball = { x: 240, y: 300, vx: 3, vy: -3 };
     let bricks = [];
-    for (let r = 0; r < 5; r++) for (let col = 0; col < 8; col++) bricks.push({ x: col * 58 + 12, y: r * 24 + 40, w: 52, h: 18, alive: true });
+    for (let r = 0; r < 5; r++)
+      for (let col = 0; col < 8; col++)
+        bricks.push({ x: col * 58 + 12, y: r * 24 + 40, w: 52, h: 18, alive: true });
     let mx = 240;
-    c.addEventListener("mousemove", e => { const r = c.getBoundingClientRect(); mx = (e.clientX - r.left) * (c.width / r.width); });
-    c.addEventListener("touchmove", e => { const r = c.getBoundingClientRect(); mx = (e.touches[0].clientX - r.left) * (c.width / r.width); });
+
+    PlayNest.init({
+      gameId: "breakout",
+      lockPage: true,
+      toolbar: true,
+      canvas: "#c",
+      canvasSize: { baseWidth: 480, baseHeight: 360 },
+      mobile: { joystick: true, action: false, pause: true },
+    });
+
+    function setPaddleX(clientX) {
+      const r = c.getBoundingClientRect();
+      mx = (clientX - r.left) * (c.width / r.width);
+    }
+    c.addEventListener("mousemove", (e) => setPaddleX(e.clientX));
+    c.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      setPaddleX(e.touches[0].clientX);
+    }, { passive: false });
+    if (PlayNest.mobile) {
+      PlayNest.mobile.options.onJoystick = ({ x }) => {
+        mx += x * 14;
+        mx = Math.max(40, Math.min(c.width - 40, mx));
+      };
+    }
+
     function loop() {
       ball.x += ball.vx; ball.y += ball.vy;
-      if (ball.x < 8 || ball.x > c.width - 8) ball.vx *= -1;
-      if (ball.y < 8) ball.vy *= -1;
+      if (ball.x < 8 || ball.x > c.width - 8) { ball.vx *= -1; PlayNest.sfx?.bounce(); }
+      if (ball.y < 8) { ball.vy *= -1; PlayNest.sfx?.bounce(); }
       paddle = mx - 40;
-      if (ball.y > 320 && ball.x > paddle && ball.x < paddle + 80) { ball.vy = -Math.abs(ball.vy); ball.vx += (ball.x - paddle - 40) * 0.05; }
-      if (ball.y > c.height) { ball = { x: 240, y: 300, vx: 3, vy: -3 }; }
-      bricks.forEach(b => {
+      if (ball.y > 320 && ball.x > paddle && ball.x < paddle + 80) {
+        ball.vy = -Math.abs(ball.vy);
+        ball.vx += (ball.x - paddle - 40) * 0.05;
+        PlayNest.sfx?.bounce();
+      }
+      if (ball.y > c.height) { ball = { x: 240, y: 300, vx: 3, vy: -3 }; PlayNest.sfx?.lose(); }
+      bricks.forEach((b) => {
         if (b.alive && ball.x > b.x && ball.x < b.x + b.w && ball.y > b.y && ball.y < b.y + b.h) {
-          b.alive = false; ball.vy *= -1;
+          b.alive = false;
+          ball.vy *= -1;
+          PlayNest.sfx?.hit();
         }
       });
+      const left = bricks.filter((b) => b.alive).length;
+      if (left === 0) { PlayNest.save.setHighScore(1000); PlayNest.sfx?.win(); }
+
       ctx.fillStyle = "#1c1917"; ctx.fillRect(0, 0, c.width, c.height);
-      const colors = ["#f97316","#eab308","#22c55e","#3b82f6","#a855f7"];
+      const colors = ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#a855f7"];
       bricks.forEach((b, i) => {
         if (!b.alive) return;
         ctx.fillStyle = colors[Math.floor(i / 8) % colors.length];

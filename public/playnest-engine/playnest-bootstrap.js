@@ -11,6 +11,7 @@ import AudioManager from "./audioManager.js";
 import SaveSystem from "./saveSystem.js";
 import SceneManager from "./sceneManager.js";
 import UISystem from "./uiSystem.js";
+import GameSfx from "./gameSfx.js";
 import * as KeyboardBridge from "./keyboardBridge.js";
 
 const PlayNest = {
@@ -31,6 +32,8 @@ const PlayNest = {
   ui: null,
   /** @type {MobileControls|null} */
   mobile: null,
+  /** @type {GameSfx|null} */
+  sfx: null,
 
   /**
    * Initialize shared systems for a game.
@@ -87,6 +90,9 @@ const PlayNest = {
       this.scenes.go(config.scenes.initial, config.scenes);
     }
 
+    this.sfx = new GameSfx(this.audio);
+    window.PlayNest = this;
+
     return this;
   },
 
@@ -135,5 +141,23 @@ const PlayNest = {
     this.save = null;
   },
 };
+
+/** Parent iframe bridge — pause/mute/restart from PlayNest shell */
+window.addEventListener("message", (event) => {
+  const data = event.data;
+  if (!data || data.source !== "playnest-parent") return;
+
+  if (data.type === "MUTE" && PlayNest.audio) {
+    PlayNest.audio.setMuted(true);
+  } else if (data.type === "UNMUTE" && PlayNest.audio) {
+    PlayNest.audio.setMuted(false);
+  } else if (data.type === "PAUSE") {
+    PlayNest.scenes?.pause?.();
+    document.dispatchEvent(new CustomEvent("playnest-pause"));
+  } else if (data.type === "RESUME") {
+    PlayNest.scenes?.resume?.();
+    document.dispatchEvent(new CustomEvent("playnest-resume"));
+  }
+});
 
 export default PlayNest;

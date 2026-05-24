@@ -172,6 +172,15 @@ function initDomListeners() {
         e.preventDefault();
     });
 
+    document.addEventListener("touchend", (e) => {
+        if (picked && e.changedTouches[0]) {
+            if (picked.isDragging) game.drop(picked);
+            else game.move(picked);
+            picked = null;
+            e.preventDefault();
+        }
+    });
+
     document.addEventListener("keydown", (e) => {
         const code = KeyCode.keyToCode(e.keyCode, false);
         if (shortcuts[display.current] && shortcuts[display.current][code]) {
