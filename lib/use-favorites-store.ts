@@ -23,9 +23,10 @@ export function useIsFavorite(slug: string): boolean {
 }
 
 export function useFavoriteSlugs(): string[] {
-  return useSyncExternalStore(
+  const serialized = useSyncExternalStore(
     subscribe,
-    () => getFavoriteSlugs(),
-    () => [],
+    () => getFavoriteSlugs().join("\0"),
+    () => "",
   );
+  return serialized ? serialized.split("\0") : [];
 }
