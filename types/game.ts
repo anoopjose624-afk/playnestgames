@@ -20,6 +20,20 @@ export interface Game {
   badge?: GameBadge;
   /** Whether playnest-engine mobile controls are enabled. */
   mobile?: boolean;
+  /** First-load hint shown on the play page. */
+  loadingNotice?: string;
+  /** MIT / author attribution for third-party games. */
+  attribution?: {
+    author: string;
+    license: string;
+    projectUrl: string;
+    licensePath?: string;
+  };
+  /** Control reference for desktop and touch layouts. */
+  controls?: {
+    desktop: Array<{ action: string; keys: string }>;
+    mobile: Array<{ action: string; keys: string }>;
+  };
 }
 
 export interface GameFrameConfig {

@@ -11,9 +11,15 @@ interface GameFrameProps {
   lockScroll?: boolean;
 }
 
-const LOAD_TIMEOUT_MS = 20_000;
+const DEFAULT_LOAD_TIMEOUT_MS = 20_000;
+const HEAVY_LOAD_TIMEOUT_MS = 180_000;
+
+/** WebGL / large-asset games: never tear down the iframe on slow first load. */
+const HEAVY_GAME_SLUGS = new Set(["yet-another-zombie-horror"]);
 
 export function GameFrame({ game, lockScroll = true }: GameFrameProps) {
+  const isHeavyGame = HEAVY_GAME_SLUGS.has(game.slug);
+  const loadTimeoutMs = isHeavyGame ? HEAVY_LOAD_TIMEOUT_MS : DEFAULT_LOAD_TIMEOUT_MS;
   const containerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [loading, setLoading] = useState(true);
@@ -74,14 +80,30 @@ export function GameFrame({ game, lockScroll = true }: GameFrameProps) {
   }, [lockScroll]);
 
   useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      const data = event.data as { source?: string; type?: string } | null;
+      if (data?.source === "yazh-game" && (data.type === "READY" || data.type === "SHELL")) {
+        setLoading(false);
+        setError(false);
+      }
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [iframeKey]);
+
+  useEffect(() => {
     const timer = window.setTimeout(() => {
-      setLoading((prev) => {
-        if (prev) setError(true);
+      if (isHeavyGame) {
+        setLoading(false);
+        return;
+      }
+      setLoading((stillLoading) => {
+        if (stillLoading) setError(true);
         return false;
       });
-    }, LOAD_TIMEOUT_MS);
+    }, loadTimeoutMs);
     return () => window.clearTimeout(timer);
-  }, [iframeKey]);
+  }, [iframeKey, loadTimeoutMs, isHeavyGame]);
 
   if (!allowed) {
     return (
@@ -106,38 +128,46 @@ export function GameFrame({ game, lockScroll = true }: GameFrameProps) {
           maxHeight: frameConfig.maxHeight,
         }}
       >
+        <iframe
+          key={iframeKey}
+          ref={iframeRef}
+          src={resolved}
+          title={game.title}
+          className="absolute inset-0 h-full w-full"
+          sandbox="allow-scripts allow-same-origin allow-pointer-lock"
+          allow="fullscreen; autoplay"
+          onLoad={() => {
+            setLoading(false);
+            setError(false);
+          }}
+        />
+
         {loading && !error && (
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-[var(--pn-bg-deep)]">
             <div className="h-12 w-12 animate-spin rounded-full border-[3px] border-[var(--pn-accent-purple)] border-t-transparent" />
             <p className="text-sm text-[var(--pn-text-secondary)]">Loading {game.title}…</p>
+            {isHeavyGame && (
+              <p className="max-w-xs text-center text-xs text-[var(--pn-text-muted)]">
+                Large 3D game — first load can take up to a minute. Assets will continue loading in
+                the background.
+              </p>
+            )}
             <div className="h-1.5 w-48 overflow-hidden rounded-full bg-white/10">
               <div className="pn-skeleton h-full w-full" />
             </div>
           </div>
         )}
 
-        {paused && !loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <p className="pn-glass rounded-xl px-6 py-3 text-lg font-semibold text-white">Paused</p>
+        {error && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-[var(--pn-bg-deep)]/95 p-4">
+            <GameErrorState title={game.title} onRetry={handleRestart} />
           </div>
         )}
 
-        {error ? (
-          <GameErrorState title={game.title} onRetry={handleRestart} />
-        ) : (
-          <iframe
-            key={iframeKey}
-            ref={iframeRef}
-            src={resolved}
-            title={game.title}
-            className="absolute inset-0 h-full w-full"
-            sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"
-            allow="fullscreen; autoplay"
-            onLoad={() => {
-              setLoading(false);
-              setError(false);
-            }}
-          />
+        {paused && !loading && !error && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <p className="pn-glass rounded-xl px-6 py-3 text-lg font-semibold text-white">Paused</p>
+          </div>
         )}
       </div>
 

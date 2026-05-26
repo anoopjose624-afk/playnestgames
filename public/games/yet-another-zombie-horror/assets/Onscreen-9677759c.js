@@ -1,0 +1,1 @@
+import{M as e}from"./App-98526866.js";import"./index-578bf340.js";class a{loop;constructor(s,o,t){setTimeout(()=>this.loop=new e(s,t,o),500)}start(){this.loop.start()}resize(s,o){this.loop.resize(s,o)}set inputs(s){this.loop.inputs=s}set pause(s){this.loop.pause=s}dispose(){this.loop.dispose()}}export{a as default};

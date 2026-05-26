@@ -48,6 +48,11 @@ export function GameCard({ game, priority = false }: GameCardProps) {
             {badge.label}
           </span>
         )}
+        {game.mobile && (
+          <span className="absolute right-2 top-2 rounded-md bg-black/55 px-2 py-0.5 text-[10px] font-semibold text-[var(--pn-accent-cyan)] backdrop-blur-sm">
+            Mobile
+          </span>
+        )}
         <span className="absolute bottom-2 right-2 translate-y-1 rounded-full bg-[var(--pn-accent-purple)] px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           Play →
         </span>

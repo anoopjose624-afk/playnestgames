@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 public/games/**/node_modules
+public/games/YetAnotherZombieHorror-main/node_modules
+public/games/YetAnotherZombieHorror-main/dist
+public/games/YetAnotherZombieHorror-main/build/node_modules
 /.pnp
 .pnp.*
 .yarn/*

@@ -90,6 +90,56 @@ export default async function GamePage({ params }: PageProps) {
         {game.description}
       </p>
 
+      {game.mobile && (
+        <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--pn-accent-cyan)]/30 bg-[var(--pn-accent-cyan)]/10 px-3 py-1 text-xs font-semibold text-[var(--pn-accent-cyan)]">
+          Touch controls supported
+        </p>
+      )}
+
+      {game.loadingNotice && (
+        <p className="mt-4 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
+          {game.loadingNotice}
+        </p>
+      )}
+
+      {game.controls && (
+        <section className="mt-8 grid gap-6 sm:grid-cols-2">
+          <ControlsTable title="Desktop controls" rows={game.controls.desktop} />
+          <ControlsTable title="Mobile controls" rows={game.controls.mobile} />
+        </section>
+      )}
+
+      {game.attribution && (
+        <footer className="mt-8 rounded-xl border border-[var(--pn-border-subtle)] bg-white/5 px-4 py-4 text-xs leading-relaxed text-[var(--pn-text-muted)]">
+          <p>
+            <strong className="text-[var(--pn-text-secondary)]">{game.title}</strong> by{" "}
+            <a
+              href={game.attribution.projectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--pn-accent-cyan)] hover:underline"
+            >
+              {game.attribution.author}
+            </a>
+            . Licensed under the {game.attribution.license}.{" "}
+            {game.attribution.licensePath && (
+              <>
+                <a
+                  href={game.attribution.licensePath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--pn-accent-purple)] hover:underline"
+                >
+                  View license text
+                </a>
+                .{" "}
+              </>
+            )}
+            Original project and source code remain the property of the author.
+          </p>
+        </footer>
+      )}
+
       {related.length > 0 && (
         <section className="mt-12 border-t border-[var(--pn-border-subtle)] pt-10">
           <h2 className="pn-section-title mb-4">More like this</h2>
@@ -100,6 +150,34 @@ export default async function GamePage({ params }: PageProps) {
           </div>
         </section>
       )}
+    </div>
+  );
+}
+
+function ControlsTable({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: Array<{ action: string; keys: string }>;
+}) {
+  return (
+    <div className="rounded-xl border border-[var(--pn-border-subtle)] bg-[var(--pn-bg-elevated)]/50 p-4">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-[var(--pn-text-primary)]">
+        {title}
+      </h2>
+      <table className="w-full text-left text-sm">
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.action} className="border-t border-white/5 first:border-0">
+              <th className="py-2 pr-3 font-medium text-[var(--pn-text-secondary)]">
+                {row.action}
+              </th>
+              <td className="py-2 font-mono text-xs text-[var(--pn-accent-cyan)]">{row.keys}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

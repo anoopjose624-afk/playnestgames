@@ -4,6 +4,12 @@ import { useSyncExternalStore } from "react";
 import { getFavoriteSlugs, isFavorite } from "@/lib/favorites";
 
 const FAVORITES_EVENT = "playnest-favorites-change";
+const EMPTY_SNAPSHOT = "";
+const EMPTY_SLUGS: string[] = [];
+
+function getFavoriteSnapshot(): string {
+  return getFavoriteSlugs().join("\0");
+}
 
 function subscribe(callback: () => void): () => void {
   window.addEventListener(FAVORITES_EVENT, callback);
@@ -25,8 +31,9 @@ export function useIsFavorite(slug: string): boolean {
 export function useFavoriteSlugs(): string[] {
   const serialized = useSyncExternalStore(
     subscribe,
-    () => getFavoriteSlugs().join("\0"),
-    () => "",
+    getFavoriteSnapshot,
+    () => EMPTY_SNAPSHOT,
   );
-  return serialized ? serialized.split("\0") : [];
+  if (!serialized) return EMPTY_SLUGS;
+  return serialized.split("\0");
 }

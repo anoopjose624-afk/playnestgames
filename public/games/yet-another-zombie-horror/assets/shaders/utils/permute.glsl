@@ -1,0 +1,45 @@
+#ifndef GL_FRAGMENT_PRECISION_HIGH
+  precision mediump float;
+
+#else
+  precision highp float;
+#endif
+
+float mod289 (float x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec2 mod289 (vec2 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec3 mod289 (vec3 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 mod289 (vec4 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+#ifndef GL_FRAGMENT_PRECISION_HIGH
+  precision mediump float;
+
+#else
+  precision highp float;
+#endif
+
+float permute (float x) {
+  return mod289(((x * 34.0) + 1.0) * x);
+}
+
+vec2 permute (vec2 x) {
+  return mod289(((x * 34.0) + 1.0) * x);
+}
+
+vec3 permute (vec3 x) {
+  return mod289(((x * 34.0) + 1.0) * x);
+}
+
+vec4 permute (vec4 x) {
+  return mod289(((x * 34.0) + 1.0) * x);
+}

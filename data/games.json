@@ -212,5 +212,48 @@
     "categories": ["puzzle", "casual"],
     "featured": false,
     "publisher": "Tomás Malbrán"
+  },
+  {
+    "id": "yet-another-zombie-horror",
+    "slug": "yet-another-zombie-horror",
+    "title": "Yet Another Zombie Horror",
+    "description": "Survive the night in a fog-choked city block. Fight zombies with pistols and rifles in this WebGL horror shooter — desktop keyboard/mouse or touchscreen controls.",
+    "thumbnail": "/thumbnails/yet-another-zombie-horror.svg",
+    "embedUrl": "/games/yet-another-zombie-horror/embed",
+    "categories": ["horror", "action"],
+    "featured": true,
+    "publisher": "Ustym Ukhman",
+    "aspectRatio": "16:9",
+    "addedAt": "2026-05-23",
+    "badge": "new",
+    "mobile": true,
+    "loadingNotice": "This 3D game downloads large assets on first visit. Please wait up to two minutes on slower connections — quality is lowered automatically on phones.",
+    "attribution": {
+      "author": "Ustym Ukhman",
+      "license": "MIT License",
+      "projectUrl": "https://github.com/UstymUkhman/YetAnotherZombieHorror",
+      "licensePath": "/games/yet-another-zombie-horror/LICENSE"
+    },
+    "controls": {
+      "desktop": [
+        { "action": "Move", "keys": "W A S D" },
+        { "action": "Look", "keys": "Mouse" },
+        { "action": "Shoot", "keys": "Left click" },
+        { "action": "Aim", "keys": "Right click (hold)" },
+        { "action": "Run", "keys": "Shift" },
+        { "action": "Reload", "keys": "R" },
+        { "action": "Switch weapon", "keys": "Q / scroll" },
+        { "action": "Pause / menu", "keys": "Esc" }
+      ],
+      "mobile": [
+        { "action": "Move", "keys": "Left virtual joystick" },
+        { "action": "Look", "keys": "Drag right side of screen" },
+        { "action": "Shoot", "keys": "FIRE button" },
+        { "action": "Aim", "keys": "AIM button (hold)" },
+        { "action": "Run", "keys": "RUN button" },
+        { "action": "Reload", "keys": "R button" },
+        { "action": "Switch weapon", "keys": "W button" }
+      ]
+    }
   }
 ]

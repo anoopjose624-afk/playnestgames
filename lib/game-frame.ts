@@ -12,11 +12,20 @@ export function getGameFrameConfig(game: Pick<Game, "slug" | "aspectRatio">): Ga
   const ratio = game.aspectRatio ?? (game.slug === "endless-runner" ? "960:520" : "16:9");
   const cssRatio = ASPECT_MAP[ratio] ?? "16 / 9";
   const isWide = ratio === "960:520" || ratio === "16:9";
+  const isHeavy3D = game.slug === "yet-another-zombie-horror";
 
   return {
     aspectRatio: cssRatio,
-    minHeight: isWide ? "min(50vh, 320px)" : "min(45vh, 280px)",
-    maxHeight: isWide ? "min(85vh, 720px)" : "min(80vh, 640px)",
+    minHeight: isHeavy3D
+      ? "min(55vh, 360px)"
+      : isWide
+        ? "min(50vh, 320px)"
+        : "min(45vh, 280px)",
+    maxHeight: isHeavy3D
+      ? "min(90vh, 800px)"
+      : isWide
+        ? "min(85vh, 720px)"
+        : "min(80vh, 640px)",
   };
 }
 

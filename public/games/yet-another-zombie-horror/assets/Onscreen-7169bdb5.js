@@ -1,0 +1,1 @@
+import{M as e}from"./App-fc2114ec.js";import"./quality-244afbe8.js";import"./index-0e950fc8.js";class l{constructor(s,o,t){setTimeout(()=>this.loop=new e(s,t,o),500)}start(){this.loop.start()}resize(s,o){this.loop.resize(s,o)}set inputs(s){this.loop.inputs=s}set pause(s){this.loop.pause=s}dispose(){this.loop.dispose()}}export{l as default};

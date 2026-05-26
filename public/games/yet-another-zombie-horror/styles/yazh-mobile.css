@@ -1,0 +1,102 @@
+/* PlayNest mobile controls for Yet Another Zombie Horror */
+.yazh-mobile-controls {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.yazh-mobile-controls * {
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.yazh-joy-zone {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(12, 14, 20, 0.55);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+.yazh-joy-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.45);
+}
+
+.yazh-look-zone {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 45%;
+  height: 100%;
+}
+
+.yazh-actions {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(52px, 1fr));
+  gap: 8px;
+  max-width: 200px;
+}
+
+.yazh-actions button {
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 21, 31, 0.85);
+  color: #e8eaf0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.yazh-actions button[data-action="shoot"] {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.yazh-actions button[data-action="aim"]:active,
+.yazh-actions button[data-action="shoot"]:active,
+.yazh-actions button:active {
+  filter: brightness(1.15);
+  transform: scale(0.96);
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .yazh-joy-zone {
+    width: 96px;
+    height: 96px;
+  }
+  .yazh-actions {
+    bottom: 8px;
+    right: 8px;
+  }
+}
+
+body.pn-yazh-paused .yazh-mobile-controls {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@media (pointer: fine) and (min-width: 900px) {
+  .yazh-mobile-controls {
+    display: none;
+  }
+}

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:runner": "npm run build --prefix public/games/endless-runner",
+    "build:yazh": "cd public/games/YetAnotherZombieHorror-main && npx --yes pnpm@8.15.4 run setup && npx --yes pnpm@8.15.4 run build:web && node ../../../scripts/deploy-yazh.mjs",
     "start": "next start",
     "lint": "eslint"
   },
